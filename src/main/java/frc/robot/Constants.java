@@ -18,11 +18,31 @@ import edu.wpi.first.wpilibj.TimedRobot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  public static final class IntakeConstants {
+    public static final int kLeftIntakeMotorPort = 16;
+    public static final int kRightIntakeMotorPort = 17;
+  }
+
+  public static final class ArmConstants {
+    public static final int kLeftPivotMotorPort = 18;
+    public static final int kRightPivotMotorPort = 19;
+
+  }
+
+  public static final class ShooterConstants {
+    public static final int kLeftShooterMotorPort = 20;
+    public static final int kRightShooterMotorPort = 21;
+  }
+
   public static final class DriveConstants {
     public static final int kFrontLeftDriveMotorPort = 0;
     public static final int kRearLeftDriveMotorPort = 2;
     public static final int kFrontRightDriveMotorPort = 4;
     public static final int kRearRightDriveMotorPort = 6;
+
+    public static final int kLeftIntakeMotorPort = 16;
+    public static final int kRightIntakeMotorPort = 17;
 
     public static final int kFrontLeftTurningMotorPort = 1;
     public static final int kRearLeftTurningMotorPort = 3;
