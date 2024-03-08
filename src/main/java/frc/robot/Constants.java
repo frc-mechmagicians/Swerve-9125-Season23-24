@@ -18,21 +18,43 @@ import edu.wpi.first.wpilibj.TimedRobot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  
+  public static final int generalMotorSmartLimit = 35;
+  public static final int intakeMotorSmartLimit = 25;
 
   public static final class IntakeConstants {
     public static final int kLeftIntakeMotorPort = 16;
-    public static final int kRightIntakeMotorPort = 17;
   }
 
   public static final class ArmConstants {
-    public static final int kLeftPivotMotorPort = 18;
-    public static final int kRightPivotMotorPort = 19;
+    public static final int kLeftPivotMotorPort = 17;
+    public static final int kRightPivotMotorPort = 18;
+    public static final double kP = 0.1;
+    public static final double kI = 0;
+    public static final double kD = 0;
+    public static final double ks = 0.1;
+    public static final double kg = 0.51;
+    public static final double kv = 4.68;
+    public static final double ka = 0.03;
+    public static final double feedforwardVelocity = 1;
+    /* Reca.lc
+     * Motor: 2
+     * Ratio: 240
+     * Efficieny: 100%
+     * Curr: 40
+     * CoM dis: 22
+     * arm mass: 27 lbs
+     * start ang 90 deg
+     * end ang 180 deg
+     * iter limit 10000
+     */
+
 
   }
 
   public static final class ShooterConstants {
-    public static final int kLeftShooterMotorPort = 20;
-    public static final int kRightShooterMotorPort = 21;
+    public static final int kLeftShooterMotorPort = 19;
+    public static final int kRightShooterMotorPort = 20;
   }
 
   public static final class DriveConstants {

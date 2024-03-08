@@ -4,9 +4,9 @@
 
 package frc.robot.subsystems;
 
+import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 
-import java.util.function.BooleanSupplier;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -19,13 +19,11 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
 public class IntakeSubsystem extends SubsystemBase {
   private CANSparkMax m_intakeMotor;
-  private CANSparkMax m_intakeMotor2;
 
   /** Creates a new Intake. */
   public IntakeSubsystem() {
     m_intakeMotor = new CANSparkMax(IntakeConstants.kLeftIntakeMotorPort, MotorType.kBrushless);
-    m_intakeMotor2 = new CANSparkMax(IntakeConstants.kRightIntakeMotorPort, MotorType.kBrushless);
-    m_intakeMotor2.follow(m_intakeMotor);
+    m_intakeMotor.setSmartCurrentLimit(Constants.intakeMotorSmartLimit);
   }
 
   @Override
@@ -39,10 +37,13 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   // hasNote
-  public void hasNote(){ // Should be BooleanSupplier return type
-    /*if (){ // return statement later if sensor finds note == true
+  public boolean hasNote(){ // Should be BooleanSupplier return type
+    /*if (true){ // return statement later if sensor finds note == true
       return true;
-    }
+    }*/
+
+    return true;
+    /* 
     else {
       return false;
     }*/
@@ -51,7 +52,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   // pickNoteCommand
   public Command pickNoteCommand() {
-    return runIntakeCommand(0.5); // add .until (hasNote is true) to end
+    return runIntakeCommand(0.5).until(()->this.hasNote()); // add .until (hasNote is true) to end
   }
 }
  
