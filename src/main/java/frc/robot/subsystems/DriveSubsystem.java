@@ -178,4 +178,17 @@ public class DriveSubsystem extends SubsystemBase {
   public double getTurnRate() {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
+
+  public SwerveModule getFrontLeft(){
+    return m_frontLeft;
+  }
+  public SwerveModule getFrontRight(){
+    return m_frontRight;
+  }
+  public SwerveModule getBackLeft(){
+    return m_rearLeft;
+  }
+  public SwerveModule getBackRight(){
+    return m_rearRight;
+  }
 }

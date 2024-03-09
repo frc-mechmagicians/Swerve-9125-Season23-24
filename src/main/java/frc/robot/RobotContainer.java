@@ -25,6 +25,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -42,11 +43,12 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   public final ArmSubsystem m_arm = new ArmSubsystem();
-  public  final IntakeSubsystem m_intake = new IntakeSubsystem();
-  public final ShooterSubsystem m_shooter = new ShooterSubsystem();
+//   public  final IntakeSubsystem m_intake = new IntakeSubsystem();
+//   public final ShooterSubsystem m_shooter = new ShooterSubsystem();
 
   // The driver's controller
   PS4Controller m_driverController = new PS4Controller(OIConstants.kDriverControllerPort);
+  XboxController m_operatoController = new XboxController(1);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -79,14 +81,24 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
+    final double armSpeed = 0.1;
+    
+    final JoystickButton xboxButton1 = new JoystickButton(m_operatoController, XboxController.Button.kY.value);        
+    xboxButton1.whileTrue(m_arm.rotateArmCommand(armSpeed));
 
-    SmartDashboard.putData("pickNoteCommand", m_intake.pickNoteCommand());
-    SmartDashboard.putData("runIntakeCommand", m_intake.runIntakeCommand(0.1)); // you can set to  joystick but we'll do this for testing
-    SmartDashboard.putData("runShooterCommand", m_shooter.runShooterCommand(0.1));
-    SmartDashboard.putData("positionArmCommand", m_arm.positionArmCommand(60));
-    SmartDashboard.putData("rotateArmCommand", m_arm.rotateArmCommand(0.1));
+    final JoystickButton xboxButton2 = new JoystickButton(m_operatoController, XboxController.Button.kY.value);        
+    xboxButton2.whileTrue(m_arm.rotateArmCommand(-armSpeed));
+
+    // SmartDashboard.putData("pickNoteCommand", m_intake.pickNoteCommand());
+    // SmartDashboard.putData("runIntakeCommand", m_intake.runIntakeCommand(0.1)); // you can set to  joystick but we'll do this for testing
+    // SmartDashboard.putData("runShooterCommand", m_shooter.runShooterCommand(0.1));
+    // SmartDashboard.putData("positionArmCommand", m_arm.positionArmCommand(60));
+    // SmartDashboard.putData("rotateArmCommand", m_arm.rotateArmCommand(0.1));
 
 
+  }
+  public DriveSubsystem getDriveSubsystem(){
+    return m_robotDrive;
   }
 
   /**

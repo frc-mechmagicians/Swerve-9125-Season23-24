@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -30,6 +31,8 @@ public class ArmSubsystem extends SubsystemBase{
     public ArmSubsystem() {
         m_pivotMotor = new CANSparkMax(ArmConstants.kLeftPivotMotorPort, MotorType.kBrushless);
         m_pivotMotor2 = new CANSparkMax(ArmConstants.kRightPivotMotorPort, MotorType.kBrushless);
+        m_pivotMotor.setIdleMode(IdleMode.kBrake);
+        m_pivotMotor2.setIdleMode(IdleMode.kBrake);
         m_pivotMotor2.follow(m_pivotMotor);
         armEncoder = m_pivotMotor.getEncoder();
         m_pivotMotor.setSmartCurrentLimit(Constants.generalMotorSmartLimit); //Make a max current limit
