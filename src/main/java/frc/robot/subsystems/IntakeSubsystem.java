@@ -15,15 +15,23 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import com.revrobotics.*;
+import com.revrobotics.Rev2mDistanceSensor.Port;
+
+
 
 
 public class IntakeSubsystem extends SubsystemBase {
   private CANSparkMax m_intakeMotor;
+  private Rev2mDistanceSensor distOnboard; 
+  private Rev2mDistanceSensor distMXP;
 
   /** Creates a new Intake. */
   public IntakeSubsystem() {
     m_intakeMotor = new CANSparkMax(IntakeConstants.kLeftIntakeMotorPort, MotorType.kBrushless);
     m_intakeMotor.setSmartCurrentLimit(Constants.intakeMotorSmartLimit);
+    distOnboard = new Rev2mDistanceSensor(Port.kOnboard);
+    distMXP = new Rev2mDistanceSensor(Port.kMXP);
   }
 
   @Override
@@ -37,22 +45,16 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   // hasNote
-  public boolean hasNote(){ // Should be BooleanSupplier return type
-    /*if (true){ // return statement later if sensor finds note == true
+  public boolean hasNote(){ 
+    if (distMXP.getRange() < 2 && distOnboard.getRange() < 2){ 
       return true;
-    }*/
-
-    return true;
-    /* 
-    else {
-      return false;
-    }*/
-    
+    }
+    return false;
   }
 
   // pickNoteCommand
   public Command pickNoteCommand() {
-    return runIntakeCommand(0.5).until(()->this.hasNote()); // add .until (hasNote is true) to end
+    return runIntakeCommand(0.5).until(()->this.hasNote()==true);
   }
 }
  
