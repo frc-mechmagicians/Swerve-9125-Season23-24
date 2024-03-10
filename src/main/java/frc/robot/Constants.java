@@ -27,6 +27,7 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
+    public static final int kEncoderPort = 1;
     public static final int kLeftPivotMotorPort = 9;
     public static final int kRightPivotMotorPort = 10;
     public static final double kP = 0.1;
