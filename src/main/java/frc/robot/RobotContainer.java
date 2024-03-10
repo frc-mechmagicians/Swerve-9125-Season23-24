@@ -69,7 +69,7 @@ public class RobotContainer {
                     -m_driverController.getLeftX() * DriveConstants.kMaxSpeedMetersPerSecond, //changed this to negative
                     -m_driverController.getRawAxis(4)
                         * ModuleConstants.kMaxModuleAngularSpeedRadiansPerSecond,
-                    false),
+                    true),
             m_robotDrive));
         
   }
@@ -82,13 +82,13 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    final double armSpeed = 0.1;
+    final double armSpeed = 0.4;
     
     final JoystickButton xboxButton1 = new JoystickButton(m_operatoController, XboxController.Button.kY.value);        
-    xboxButton1.whileTrue(m_arm.rotateArmCommand(armSpeed));
+    xboxButton1.whileTrue(m_arm.rotateArmCommand(-armSpeed));
 
-    final JoystickButton xboxButton2 = new JoystickButton(m_operatoController, XboxController.Button.kY.value);        
-    xboxButton2.whileTrue(m_arm.rotateArmCommand(-armSpeed));
+    final JoystickButton xboxButton2 = new JoystickButton(m_operatoController, XboxController.Button.kA.value);        
+    xboxButton2.whileTrue(m_arm.rotateArmCommand(armSpeed/2));
 
     // SmartDashboard.putData("pickNoteCommand", m_intake.pickNoteCommand());
     // SmartDashboard.putData("runIntakeCommand", m_intake.runIntakeCommand(0.1)); // you can set to  joystick but we'll do this for testing
@@ -122,9 +122,9 @@ public class RobotContainer {
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+            List.of(new Translation2d(4, 0), new Translation2d(4, 4)),
             // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(3, 0, new Rotation2d(0)),
+            new Pose2d(0, 0, new Rotation2d(0)),
             config);
     
 

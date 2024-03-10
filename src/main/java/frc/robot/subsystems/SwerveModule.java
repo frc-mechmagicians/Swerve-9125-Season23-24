@@ -43,7 +43,7 @@ public class SwerveModule {
   //     new ProfiledPIDController(
   //       ModuleConstants.kPModuleTurningController * 0.5,
   //         0,
-  //         0.1,
+  //         0,
   //         new TrapezoidProfile.Constraints(
   //             ModuleConstants.kMaxModuleAngularSpeedRadiansPerSecond,
   //             ModuleConstants.kMaxModuleAngularAccelerationRadiansPerSecondSquared));
@@ -85,10 +85,10 @@ public class SwerveModule {
     m_drivePIDController = m_driveMotor.getPIDController();
 
     m_driveMotor.setInverted(driveEncoderReversed);
-    m_drivePIDController.setP(0.005);
+    m_drivePIDController.setP(0.0075);
     m_drivePIDController.setI(0);
     m_drivePIDController.setD(0);
-    m_drivePIDController.setFF(0.1);
+    m_drivePIDController.setFF(0.4);
     m_drivePIDController.setOutputRange(-1, 1);
     m_driveEncoder.setPositionConversionFactor(Constants.ModuleConstants.kDriveEncoderDistancePerPulse);
     m_driveEncoder.setVelocityConversionFactor(Constants.ModuleConstants.kDriveEncoderDistancePerPulse);

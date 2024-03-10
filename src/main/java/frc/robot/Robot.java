@@ -87,6 +87,7 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
     //m_robotContainer.getDriveSubsystem().resetEncoders();
+    m_robotContainer.getDriveSubsystem().zeroHeading();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
@@ -107,6 +108,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("FrontRightVel", m_robotContainer.getDriveSubsystem().getBackRight().getState().speedMetersPerSecond);
     SmartDashboard.putNumber("BackLeftVel", m_robotContainer.getDriveSubsystem().getBackRight().getState().speedMetersPerSecond);
     SmartDashboard.putNumber("BackRightVel", m_robotContainer.getDriveSubsystem().getBackRight().getState().speedMetersPerSecond);
+    SmartDashboard.putNumber("GyroHeading", m_robotContainer.getDriveSubsystem().getHeading());
+    SmartDashboard.putNumber("GyroHeading1", m_robotContainer.getDriveSubsystem().m_gyro.getAngle());
+    
   }
 
 
