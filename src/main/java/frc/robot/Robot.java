@@ -86,6 +86,7 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
+    //m_robotContainer.getDriveSubsystem().resetEncoders();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
@@ -98,6 +99,14 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("FrontRight", m_robotContainer.getDriveSubsystem().getFrontRight().getTurningPosition());
     SmartDashboard.putNumber("BackLeft", m_robotContainer.getDriveSubsystem().getBackLeft().getTurningPosition());
     SmartDashboard.putNumber("BackRight", m_robotContainer.getDriveSubsystem().getBackRight().getTurningPosition());
+    SmartDashboard.putNumber("FrontLeftPos", m_robotContainer.getDriveSubsystem().getBackRight().getPosition().distanceMeters);
+    SmartDashboard.putNumber("FrontRightPos", m_robotContainer.getDriveSubsystem().getBackRight().getPosition().distanceMeters);
+    SmartDashboard.putNumber("BackLeftPos", m_robotContainer.getDriveSubsystem().getBackRight().getPosition().distanceMeters);
+    SmartDashboard.putNumber("BackRightPos", m_robotContainer.getDriveSubsystem().getBackRight().getPosition().distanceMeters);
+    SmartDashboard.putNumber("FrontLeftVel", m_robotContainer.getDriveSubsystem().getBackRight().getState().speedMetersPerSecond);
+    SmartDashboard.putNumber("FrontRightVel", m_robotContainer.getDriveSubsystem().getBackRight().getState().speedMetersPerSecond);
+    SmartDashboard.putNumber("BackLeftVel", m_robotContainer.getDriveSubsystem().getBackRight().getState().speedMetersPerSecond);
+    SmartDashboard.putNumber("BackRightVel", m_robotContainer.getDriveSubsystem().getBackRight().getState().speedMetersPerSecond);
   }
 
 

@@ -57,8 +57,8 @@ public class RobotContainer {
 
     // Configure default commands
     m_robotDrive.setDefaultCommand(
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X axis of the right stick.
+        //The left stick controls translation of the robot.
+        //Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () ->
                 m_robotDrive.drive(
@@ -66,11 +66,12 @@ public class RobotContainer {
                     // This will map the [-1, 1] to [max speed backwards, max speed forwards],
                     // converting them to actual units.
                     m_driverController.getLeftY() * DriveConstants.kMaxSpeedMetersPerSecond,
-                    m_driverController.getLeftX() * DriveConstants.kMaxSpeedMetersPerSecond,
-                    m_driverController.getRightX()
+                    -m_driverController.getLeftX() * DriveConstants.kMaxSpeedMetersPerSecond, //changed this to negative
+                    -m_driverController.getRawAxis(4)
                         * ModuleConstants.kMaxModuleAngularSpeedRadiansPerSecond,
                     false),
             m_robotDrive));
+        
   }
 
   /**

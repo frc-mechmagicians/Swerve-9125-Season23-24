@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -20,6 +21,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import  com.ctre.phoenix6.hardware.CANcoder;
@@ -37,14 +39,18 @@ public class SwerveModule {
 
   private final SparkPIDController m_drivePIDController;
   // Using a TrapezoidProfile PIDController to allow for smooth turning
-  private final ProfiledPIDController m_turningPIDController =
-      new ProfiledPIDController(
-        0.01* ModuleConstants.kPModuleTurningController,
-          0,
-          0,
-          new TrapezoidProfile.Constraints(
-              ModuleConstants.kMaxModuleAngularSpeedRadiansPerSecond,
-              ModuleConstants.kMaxModuleAngularAccelerationRadiansPerSecondSquared));
+  // private final ProfiledPIDController m_turningPIDController =
+  //     new ProfiledPIDController(
+  //       ModuleConstants.kPModuleTurningController * 0.5,
+  //         0,
+  //         0.1,
+  //         new TrapezoidProfile.Constraints(
+  //             ModuleConstants.kMaxModuleAngularSpeedRadiansPerSecond,
+  //             ModuleConstants.kMaxModuleAngularAccelerationRadiansPerSecondSquared));
+
+
+  private final PIDController m_turningPIDController = new PIDController(ModuleConstants.kPModuleTurningController * 0.6, 0, 0);
+  private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.001, 0.05);
   //private final int m_turningEncoderReversed;
 
   /**
@@ -66,10 +72,11 @@ public class SwerveModule {
       boolean turningEncoderReversed) {
     m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
     m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
-    m_driveMotor.restoreFactoryDefaults();
-    m_driveMotor.restoreFactoryDefaults();
-    m_driveMotor.setSmartCurrentLimit(Constants.generalMotorSmartLimit);
-    m_turningMotor.setSmartCurrentLimit(Constants.generalMotorSmartLimit);
+   // m_driveMotor.restoreFactoryDefaults();
+    //m_turningMotor.restoreFactoryDefaults();
+    //m_driveMotor.setSmartCurrentLimit(Constants.generalMotorSmartLimit);
+   // m_turningMotor.setSmartCurrentLimit(Constants.generalMotorSmartLimit);
+   m_turningMotor.setIdleMode(IdleMode.kBrake);
 
     m_driveEncoder = m_driveMotor.getEncoder();
 
@@ -78,11 +85,14 @@ public class SwerveModule {
     m_drivePIDController = m_driveMotor.getPIDController();
 
     m_driveMotor.setInverted(driveEncoderReversed);
-    m_drivePIDController.setP(0.00005);
+    m_drivePIDController.setP(0.005);
     m_drivePIDController.setI(0);
     m_drivePIDController.setD(0);
     m_drivePIDController.setFF(0.1);
     m_drivePIDController.setOutputRange(-1, 1);
+    m_driveEncoder.setPositionConversionFactor(Constants.ModuleConstants.kDriveEncoderDistancePerPulse);
+    m_driveEncoder.setVelocityConversionFactor(Constants.ModuleConstants.kDriveEncoderDistancePerPulse);
+    //m_turningPIDController.setTolerance(Math.PI/100);
     //m_turningEncoderReversed = turningEncoderReversed ? 1 : -1;
 
     // Set the distance per pulse for the drive encoder. We can simply use the
@@ -106,7 +116,7 @@ public class SwerveModule {
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
   }
   public double getTurningPosition() {
-    return m_turningEncoder.getAbsolutePosition().getValueAsDouble()*2*Math.PI;
+    return -m_turningEncoder.getAbsolutePosition().getValueAsDouble()*2*Math.PI;
   }
 
   /**
@@ -151,12 +161,12 @@ public class SwerveModule {
     // Calculate the turning motor output from the turning PID controller.
   final double turnOutput =
         m_turningPIDController.calculate(getTurningPosition(), state.angle.getRadians());
-    
+  // final double turnFeedforwardOutput = 
+  //       m_turnFeedforward.calculate(m_turningPIDController.getSetpoint().velocity);
     // Calculate the turning motor output from the turning PID controller.
     //m_driveMotor.set(driveOutput);
-    m_turningMotor.set(turnOutput);
-
-  
+    m_turningMotor.setVoltage(turnOutput);
+   // m_turningMotor.set(0);  
     //m_driveMotor.set(0.1);
     m_drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
     //m_turningPIDController.setReference(state.angle.getRadians(), ControlType.kPosition);
