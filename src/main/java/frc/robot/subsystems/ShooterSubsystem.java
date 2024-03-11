@@ -1,13 +1,17 @@
 package frc.robot.subsystems;
 
 
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -21,12 +25,28 @@ public class ShooterSubsystem extends SubsystemBase {
     public ShooterSubsystem(){
         m_shooterMotor = new CANSparkMax(ShooterConstants.kLeftShooterMotorPort, MotorType.kBrushless);
         m_shooterMotor2 = new CANSparkMax(ShooterConstants.kRightShooterMotorPort, MotorType.kBrushless);
-        m_shooterMotor2.setInverted(true);
-        m_shooterMotor2.follow(m_shooterMotor);
+         
+        m_shooterMotor.restoreFactoryDefaults();
+        m_shooterMotor2.restoreFactoryDefaults();
+        
+        m_shooterMotor.setIdleMode(IdleMode.kBrake);
+        m_shooterMotor.setIdleMode(IdleMode.kBrake);
+ 
+        m_shooterMotor.setSmartCurrentLimit(30);
+        m_shooterMotor2.setSmartCurrentLimit(30);
+
+        SmartDashboard.putNumber("shooterSpeed", 0.2);
+        SmartDashboard.putData("runShooter", runShooterCommand(()->
+            SmartDashboard.getNumber("shooterSpeed", 0.2)));
     }
 
-    public Command runShooterCommand(double speed){
-        return new StartEndCommand(()->this.m_shooterMotor.set(speed), ()->this.m_shooterMotor.set(0), this);
+    public void setSpeed(double speed) {
+        m_shooterMotor.set(speed);
+        m_shooterMotor2.set(speed);
+    }
+
+    public Command runShooterCommand(DoubleSupplier speed){
+        return new StartEndCommand(()->this.setSpeed(speed.getAsDouble()), ()->this.setSpeed(0), this);
     }
     
 }

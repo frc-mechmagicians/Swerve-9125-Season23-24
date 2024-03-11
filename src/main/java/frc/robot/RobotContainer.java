@@ -43,8 +43,8 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   public final ArmSubsystem m_arm = new ArmSubsystem();
-//   public  final IntakeSubsystem m_intake = new IntakeSubsystem();
-//   public final ShooterSubsystem m_shooter = new ShooterSubsystem();
+  public  final IntakeSubsystem m_intake = new IntakeSubsystem();
+  public final ShooterSubsystem m_shooter = new ShooterSubsystem();
 
   // The driver's controller
   PS4Controller m_driverController = new PS4Controller(OIConstants.kDriverControllerPort);
@@ -82,7 +82,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    final double armSpeed = 0.4;
+    final double armSpeed = 0.1;
     
     final JoystickButton xboxButton1 = new JoystickButton(m_operatoController, XboxController.Button.kY.value);        
     xboxButton1.whileTrue(m_arm.rotateArmCommand(-armSpeed));

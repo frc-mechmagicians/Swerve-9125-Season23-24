@@ -110,7 +110,6 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("BackRightVel", m_robotContainer.getDriveSubsystem().getBackRight().getState().speedMetersPerSecond);
     SmartDashboard.putNumber("GyroHeading", m_robotContainer.getDriveSubsystem().getHeading());
     SmartDashboard.putNumber("GyroHeading1", m_robotContainer.getDriveSubsystem().m_gyro.getAngle());
-    
   }
 
 

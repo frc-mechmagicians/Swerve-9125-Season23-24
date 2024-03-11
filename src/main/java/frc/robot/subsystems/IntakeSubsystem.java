@@ -7,12 +7,14 @@ package frc.robot.subsystems;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 
+import javax.swing.text.StyleContext.SmallAttributeSet;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import com.revrobotics.*;
@@ -29,9 +31,18 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new Intake. */
   public IntakeSubsystem() {
     m_intakeMotor = new CANSparkMax(IntakeConstants.kLeftIntakeMotorPort, MotorType.kBrushless);
+<<<<<<< HEAD
     m_intakeMotor.setSmartCurrentLimit(Constants.intakeMotorSmartLimit);
     distOnboard = new Rev2mDistanceSensor(Port.kOnboard);
     distMXP = new Rev2mDistanceSensor(Port.kMXP);
+=======
+    m_intakeMotor.restoreFactoryDefaults();
+    m_intakeMotor.setSmartCurrentLimit(20);
+    m_intakeMotor.setIdleMode(IdleMode.kBrake);
+
+    SmartDashboard.putData("pickNote", pickNoteCommand());
+      SmartDashboard.putData("runIntake", runIntakeCommand(0.1));
+>>>>>>> e4d4f60 (Limelight, Arm encoder, Shooter)
   }
 
   @Override
@@ -45,16 +56,24 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   // hasNote
+<<<<<<< HEAD
   public boolean hasNote(){ 
     if (distMXP.getRange() < 2 && distOnboard.getRange() < 2){ 
       return true;
     }
+=======
+  public boolean hasNote(){ // Should be BooleanSupplier return type
+>>>>>>> e4d4f60 (Limelight, Arm encoder, Shooter)
     return false;
   }
 
   // pickNoteCommand
   public Command pickNoteCommand() {
+<<<<<<< HEAD
     return runIntakeCommand(0.5).until(()->this.hasNote()==true);
+=======
+    return runIntakeCommand(0.1).until(this::hasNote); // add .until (hasNote is true) to end
+>>>>>>> e4d4f60 (Limelight, Arm encoder, Shooter)
   }
 }
  

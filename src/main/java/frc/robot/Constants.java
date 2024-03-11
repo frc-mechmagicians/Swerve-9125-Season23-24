@@ -1,3 +1,4 @@
+
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -22,8 +23,18 @@ public final class Constants {
   public static final int generalMotorSmartLimit = 35;
   public static final int intakeMotorSmartLimit = 25;
 
+  //Note Locations
+  public static final double[] note1Location = {1.21,2.887};
+  public static final double[] note2Location = {2.6578,2.887};
+  public static final double[] note3Location = {4.1056,2.887};
+  public static final double[] note4Location = {0.753,8.261};
+  public static final double[] note5Location = {2.429,8.261};
+  public static final double[] note6Location = {4.106,8.261};
+  public static final double[] note7Location = {5.782,8.261};
+  public static final double[] note8Location = {7.458,8.261};
+
   public static final class IntakeConstants {
-    public static final int kLeftIntakeMotorPort = 16;
+    public static final int kLeftIntakeMotorPort = 17; //spark flex
   }
 
   public static final class ArmConstants {
@@ -54,8 +65,8 @@ public final class Constants {
   }
 
   public static final class ShooterConstants {
-    public static final int kLeftShooterMotorPort = 19;
-    public static final int kRightShooterMotorPort = 20;
+    public static final int kLeftShooterMotorPort = 16; //spark max
+    public static final int kRightShooterMotorPort = 15; // sparkfles
   }
 
   public static final class DriveConstants {
