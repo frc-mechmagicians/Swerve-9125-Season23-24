@@ -17,19 +17,17 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
 
 public class ArmSubsystem extends SubsystemBase{
     private CANSparkMax m_pivotMotor;
     private CANSparkMax m_pivotMotor2;
-    private DutyCycleEncoder m_armEncoder;
+    private Encoder m_armEncoder;
 
-    PIDController m_armPID = new PIDController(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
-    ArmFeedforward m_feedforward = new ArmFeedforward(ArmConstants.ks, ArmConstants.kg, ArmConstants.kv, ArmConstants.ka);
 
      // use some constant in Constants.java
-
+     PIDController m_armPID = new PIDController(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
+    ArmFeedforward m_feedforward = new ArmFeedforward(ArmConstants.ks, ArmConstants.kg,ArmConstants.kv,ArmConstants.ka);
 
     public ArmSubsystem() {
 
@@ -37,53 +35,70 @@ public class ArmSubsystem extends SubsystemBase{
         m_pivotMotor2 = new CANSparkMax(ArmConstants.kRightPivotMotorPort, MotorType.kBrushless);
         m_pivotMotor.restoreFactoryDefaults();
         m_pivotMotor2.restoreFactoryDefaults();
-        m_pivotMotor2.setInverted(true);
+        m_pivotMotor.setInverted(true);
 
         m_pivotMotor.setIdleMode(IdleMode.kBrake);
         m_pivotMotor2.setIdleMode(IdleMode.kBrake);
         m_pivotMotor.setSmartCurrentLimit(30); //Make a max current limit
         m_pivotMotor2.setSmartCurrentLimit(30); //Make a max current limit
         
-        m_armEncoder = new  DutyCycleEncoder(new DigitalInput(ArmConstants.kEncoderPort));
+        
+        m_armEncoder = new Encoder(ArmConstants.kEncoderPort1,ArmConstants.kEncoderPort2);
+        m_armEncoder.setDistancePerPulse(ArmConstants.kArmEncoderDistancePerPulse);
         m_armPID.setTolerance(1);
 
         // Add to smart dashboard
-        DoubleSupplier angleSupplier = ()->SmartDashboard.getNumber("armAngleInDegrees", 0);
-        SmartDashboard.putData("positionArm", this.positionArmCommand(angleSupplier.getAsDouble()));
+        SmartDashboard.putNumber("ArmAngle", 0);
+        SmartDashboard.putData("positionArm", this.positionArmCommand(()->SmartDashboard.getNumber("ArmAngle", 10)));
         SmartDashboard.putData("trackLimelight", this.trackLimelightCommand());
-
+        SmartDashboard.putData("ResetArm", this.runOnce(()->this.reset()));
     }
 
     @Override
 
     public void periodic(){
         SmartDashboard.putNumber("ArmPosition", armPosition());
-        SmartDashboard.putNumber("ArmPosition_dist)", m_armEncoder.getDistance());
-        SmartDashboard.putNumber("ArmPosition_get)", m_armEncoder.get());
-        SmartDashboard.putNumber("ArmPosition_posoff)", m_armEncoder.getPositionOffset());
-        SmartDashboard.putNumber("ArmPosition_rot)", m_armEncoder.getDistancePerRotation());
     }
 
     public void setSpeed(double speed) {
+        if (speed > 0.2) {
+            speed = 0.2;
+        }
+        if (speed< -0.05){
+            speed = -0.05;
+        }
+        SmartDashboard.putNumber("setSpeed", speed);
         m_pivotMotor.set(speed);
         m_pivotMotor2.set(speed);
     }
 
+
     public double armPosition() {
         return m_armEncoder.getDistance();
     }
-
-    public Command positionArmCommand(double angleInDegrees){
-        double position = angleInDegrees * Math.PI/180;
-        return new PIDCommand(m_armPID, this::armPosition, position, output -> this.setSpeed(output), this);
+    public void reset(){
+        m_armEncoder.reset();
     }
+    public boolean isStopped(){
+        return m_armEncoder.getStopped();
+    }
+    public Command positionArmCommand(DoubleSupplier angleInDegrees){
+    
+        return new FunctionalCommand(()->{}, 
+            ()->this.setSpeed(m_armPID.calculate(armPosition(), angleInDegrees.getAsDouble())),
+            reason -> this.setSpeed(0), 
+            ()-> false, this);
+    }
+
 
     public Command rotateArmCommand(double speed){
         return new StartEndCommand(()->this.setSpeed(speed), ()->this.setSpeed(0), this);
     }
-
+   
     public void trackLimelight() {
-        double angle = Limelight.readLimelightAngle();
+        //double angle = Limelight.readLimelightAngle();
+        double angle = 35;
+
         double output = m_armPID.calculate(armPosition(),angle);
         setSpeed(output);
      }

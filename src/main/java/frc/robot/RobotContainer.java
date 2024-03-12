@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -90,6 +91,13 @@ public class RobotContainer {
     final JoystickButton xboxButton2 = new JoystickButton(m_operatoController, XboxController.Button.kA.value);        
     xboxButton2.whileTrue(m_arm.rotateArmCommand(armSpeed/2));
 
+    final JoystickButton xboxButtonArmButton = new JoystickButton(m_operatoController, XboxController.Button.kRightBumper.value);        
+    xboxButtonArmButton.whileTrue(new ParallelCommandGroup(m_arm.trackLimelightCommand(), 
+    m_shooter.runShooterCommand(()->SmartDashboard.getNumber("shooterSpeed", 0.7))));
+
+    final JoystickButton xboxButtonIntake = new JoystickButton(m_operatoController, XboxController.Button.kLeftBumper.value);
+    xboxButtonIntake.whileTrue(m_intake.runIntakeCommand(0.8));
+    
     // SmartDashboard.putData("pickNoteCommand", m_intake.pickNoteCommand());
     // SmartDashboard.putData("runIntakeCommand", m_intake.runIntakeCommand(0.1)); // you can set to  joystick but we'll do this for testing
     // SmartDashboard.putData("runShooterCommand", m_shooter.runShooterCommand(0.1));

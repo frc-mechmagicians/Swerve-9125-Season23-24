@@ -34,21 +34,23 @@ public final class Constants {
   public static final double[] note8Location = {7.458,8.261};
 
   public static final class IntakeConstants {
-    public static final int kLeftIntakeMotorPort = 17; //spark flex
+    public static final int kIntakeMotorPort = 17; //spark flex
   }
 
   public static final class ArmConstants {
-    public static final int kEncoderPort = 1;
+    public static final int kEncoderPort1 = 0;
+    public static final int kEncoderPort2 = 1;
     public static final int kLeftPivotMotorPort = 9;
     public static final int kRightPivotMotorPort = 10;
+    public static final double kArmEncoderDistancePerPulse = 90.0/520.0; // 90.0/2400; //degrees
     public static final double kP = 0.1;
     public static final double kI = 0;
-    public static final double kD = 0;
+    public static final double kD = 0.0;
     public static final double ks = 0.1;
-    public static final double kg = 0.51;
-    public static final double kv = 4.68;
-    public static final double ka = 0.03;
-    public static final double feedforwardVelocity = 1;
+    public static final double kg = 0.1; //.5
+    public static final double kv = 0.01;//0.08
+    public static final double ka = 0.00;
+    public static final double kFeedforwardVelocity = 0.1;
     /* Reca.lc
      * Motor: 2
      * Ratio: 240
@@ -67,6 +69,7 @@ public final class Constants {
   public static final class ShooterConstants {
     public static final int kLeftShooterMotorPort = 16; //spark max
     public static final int kRightShooterMotorPort = 15; // sparkfles
+    
   }
 
   public static final class DriveConstants {
