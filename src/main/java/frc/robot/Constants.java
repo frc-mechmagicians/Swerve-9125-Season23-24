@@ -34,7 +34,7 @@ public final class Constants {
   public static final double[] note8Location = {7.458,8.261};
 
   public static final class IntakeConstants {
-    public static final int kIntakeMotorPort = 17; //spark flex
+    public static final int kIntakeMotorPort = 17; //spark flex 
   }
 
   public static final class ArmConstants {
@@ -68,7 +68,7 @@ public final class Constants {
 
   public static final class ShooterConstants {
     public static final int kLeftShooterMotorPort = 16; //spark max
-    public static final int kRightShooterMotorPort = 15; // sparkfles
+    public static final int kRightShooterMotorPort = 15; // sparkfles 
     
   }
 
