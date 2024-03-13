@@ -35,6 +35,7 @@ public final class Constants {
 
   public static final class IntakeConstants {
     public static final int kIntakeMotorPort = 17; //spark flex 
+    public static final int kIntakeVoltage = 3;
   }
 
   public static final class ArmConstants {

@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.ArmSubsystem;
@@ -72,6 +73,8 @@ public class RobotContainer {
                         * ModuleConstants.kMaxModuleAngularSpeedRadiansPerSecond,
                     true),
             m_robotDrive));
+    m_arm.setDefaultCommand(
+      m_arm.trackLimelightCommand());
         
   }
 
@@ -83,39 +86,78 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    final double armSpeed = 0.1;
+    final double armSpeed = 0.2;
     
-    // final JoystickButton xboxButton1 = new JoystickButton(m_operatoController, XboxController.Button.kY.value);        
-    // xboxButton1.whileTrue(m_arm.rotateArmCommand(-armSpeed));
+    final JoystickButton xboxButtonMoveArmDown = new JoystickButton(m_operatoController, XboxController.Axis.kLeftY.value);        
+    xboxButtonMoveArmDown.whileTrue(m_arm.rotateArmCommand(-armSpeed/2));
 
-    // final JoystickButton xboxButton2 = new JoystickButton(m_operatoController, XboxController.Button.kA.value);        
-    // xboxButton2.whileTrue(m_arm.rotateArmCommand(armSpeed/2));
+    final JoystickButton xboxButtonMoveArmUp = new JoystickButton(m_operatoController, XboxController.Axis.kLeftY.value);      
+    xboxButtonMoveArmUp.whileTrue(m_arm.rotateArmCommand(armSpeed));
+    //Intake In
+    final JoystickButton xboxButtonIntakeIn = new JoystickButton(m_operatoController, XboxController.Axis.kRightY.value);        
+    xboxButtonIntakeIn.whileTrue(m_intake.runIntakeCommand(IntakeConstants.kIntakeVoltage));
+    //Intake Out
+    final JoystickButton xboxButtonIntakeOut = new JoystickButton(m_operatoController, XboxController.Axis.kRightY.value);      
+    xboxButtonIntakeOut.whileTrue(m_intake.runIntakeCommand(-IntakeConstants.kIntakeVoltage));
 
-    final JoystickButton xboxButtonArmButton = new JoystickButton(m_operatoController, XboxController.Button.kY.value);        
-    xboxButtonArmButton.whileTrue(new ParallelCommandGroup(m_arm.trackLimelightCommand(), 
-    m_shooter.runShooterCommand(()->SmartDashboard.getNumber("shooterSpeed", 0.7))));
+    // Speaker1 - Subwooper
+    final JoystickButton xboxButtonSp1 = new JoystickButton(m_operatoController, XboxController.Button.kY.value);        
+    xboxButtonSp1.whileTrue(new ParallelCommandGroup(new InstantCommand(()->m_arm.setPos(15)),
+      //m_arm.rotateArmCommand(15), 
+                           (m_shooter.runShooterCommand(()->0.4))));
+    // Speaker2 - preload
+    final JoystickButton xboxButtonSp2 = new JoystickButton(m_operatoController, XboxController.Button.kB.value);        
+    xboxButtonSp2.whileTrue(new ParallelCommandGroup(new InstantCommand(()->m_arm.setPos(20)), 
+       m_shooter.runShooterCommand(()->0.5)));
+    //shooter3 - 13 feet
+    final JoystickButton xboxButtonSp3 = new JoystickButton(m_operatoController, XboxController.Button.kX.value);        
+    xboxButtonSp3.whileTrue(new ParallelCommandGroup(new InstantCommand(()->m_arm.setPos(30)), 
+      m_shooter.runShooterCommand(()->0.6)));
+    //Amp
+     final JoystickButton xboxButtonAmp = new JoystickButton(m_operatoController, XboxController.Button.kA.value);        
+    xboxButtonAmp.whileTrue(new ParallelCommandGroup(new InstantCommand(()->m_arm.setPos(90)), 
+      m_shooter.runShooterCommand(()->0.2)));
 
-    final JoystickButton xboxButtonIntake = new JoystickButton(m_operatoController, XboxController.Button.kA.value);
-    xboxButtonIntake.whileTrue(m_intake.runIntakeCommand(0.3));
-    
-    // SmartDashboard.putData("pickNoteCommand", m_intake.pickNoteCommand());
-    // SmartDashboard.putData("runIntakeCommand", m_intake.runIntakeCommand(0.1)); // you can set to  joystick but we'll do this for testing
-    // SmartDashboard.putData("runShooterCommand", m_shooter.runShooterCommand(0.1));
-    // SmartDashboard.putData("positionArmCommand", m_arm.positionArmCommand(60));
-    // SmartDashboard.putData("rotateArmCommand", m_arm.rotateArmCommand(0.1));
+    // Shoot
+    final JoystickButton xboxButtonIntake = new JoystickButton(m_operatoController, XboxController.Button.kLeftBumper.value);
+    xboxButtonIntake.whileTrue(m_intake.runIntakeCommand(IntakeConstants.kIntakeVoltage));
 
+    // Intake
+    final JoystickButton xboxButtonShoot = new JoystickButton(m_operatoController, XboxController.Button.kRightBumper.value);
+    xboxButtonShoot.whileTrue(new InstantCommand(()->m_arm.setPos(0)).andThen(m_intake.pickNoteCommand(IntakeConstants.kIntakeVoltage)));
 
+  }
+
+  public IntakeSubsystem getIntake(){
+    return m_intake;
   }
   public DriveSubsystem getDriveSubsystem(){
     return m_robotDrive;
   }
+  public ArmSubsystem getArm(){
+    return m_arm;
+  }
+// public Command getAutonomousCommand() {
+
+//   Command shoot1 = new ParallelCommandGroup(m_arm.rotateArmCommand(10),
+//                           InstantCommand(()->m_shooter.setSpeed(0.4)));
+                        
+//   shoot1.until(()->m_arm.getPos() < 11).andThen(m_intake.runIntakeCommand(IntakeConstants.kIntakeVoltage));
+
+                  
+
+
+//   new Commands.sequence()
+
+// }
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
+  public Command getAutonomousCommand2() {
     // Create config for trajectory
     TrajectoryConfig config =
         new TrajectoryConfig(
@@ -160,5 +202,6 @@ public class RobotContainer {
         new InstantCommand(() -> m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose())),
         swerveControllerCommand,
         new InstantCommand(() -> m_robotDrive.drive(0, 0, 0, false)));
+    
   }
 }

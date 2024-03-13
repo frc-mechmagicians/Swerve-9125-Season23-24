@@ -32,14 +32,14 @@ public class ShooterSubsystem extends SubsystemBase {
         m_shooterMotor2.restoreFactoryDefaults();
         
         m_shooterMotor.setIdleMode(IdleMode.kBrake);
-        m_shooterMotor.setIdleMode(IdleMode.kBrake);
+        m_shooterMotor2.setIdleMode(IdleMode.kBrake);
  
         m_shooterMotor.setSmartCurrentLimit(30);
         m_shooterMotor2.setSmartCurrentLimit(30);
 
         SmartDashboard.putNumber("shooterSpeed", 0.7);
         SmartDashboard.putData("runShooter", runShooterCommand(()->
-             SmartDashboard.getNumber("shooterSpeed", 0.7)));
+             SmartDashboard.getNumber("shooterSpeed", 0.6)));
     }
 
     public void setSpeed(double speed) {

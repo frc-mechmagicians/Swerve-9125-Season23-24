@@ -61,7 +61,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    //m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -110,6 +110,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("BackRightVel", m_robotContainer.getDriveSubsystem().getBackRight().getState().speedMetersPerSecond);
     SmartDashboard.putNumber("GyroHeading", m_robotContainer.getDriveSubsystem().getHeading());
     SmartDashboard.putNumber("GyroHeading1", m_robotContainer.getDriveSubsystem().m_gyro.getAngle());
+    SmartDashboard.putBoolean("hasNote", m_robotContainer.getIntake().hasNote());
+    SmartDashboard.putNumber("2mDist", m_robotContainer.getIntake().getRange());
   }
 
 
