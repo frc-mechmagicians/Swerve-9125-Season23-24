@@ -41,9 +41,9 @@ public class IntakeSubsystem extends SubsystemBase {
     distOnboard.setRangeProfile(RangeProfile.kHighSpeed);
     
 
-    SmartDashboard.putData("pickNote", pickNoteCommand(2));
-    SmartDashboard.putData("runIntake", runIntakeCommand(2));
-    SmartDashboard.putData("shootIntake", runIntakeCommand(2));
+    SmartDashboard.putData("pickNote", pickNoteCommand(IntakeConstants.kIntakeVoltage));
+    SmartDashboard.putData("runIntake", runIntakeCommand(IntakeConstants.kIntakeVoltage));
+    SmartDashboard.putData("shootIntake", runIntakeCommand(IntakeConstants.kIntakeVoltage));
   }
 
   @Override
@@ -58,6 +58,10 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
 
+  public void setSpeed(double speed) {
+    m_intakeMotor.set(speed);
+  }
+  
   public Command runIntakeCommand(double voltage) {
     return new StartEndCommand(()->this.m_intakeMotor.setVoltage(voltage), //rmr to chg to speed
                         ()->this.m_intakeMotor.setVoltage(0), this);

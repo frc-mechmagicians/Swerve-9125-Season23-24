@@ -64,12 +64,22 @@ public final class Constants {
      * iter limit 10000
      */
 
+     public static final double kArmAnglePickNote = 0;
+     public static final double kArmAngleAmp = 90;
+     public static final double kArmAngleSubwoofer = 15;
+     public static final double kArmAnglePreload = 20;
+     public static final double kArmAngleLongRange = 30;
 
   }
 
   public static final class ShooterConstants {
     public static final int kLeftShooterMotorPort = 16; //spark max
-    public static final int kRightShooterMotorPort = 15; // sparkfles 
+    public static final int kRightShooterMotorPort = 15; // sparkflex
+         
+    public static final double kShooterSpeedAmp = 0.2;
+    public static final double kShooterSpeedSubwoofer = 0.4;
+    public static final double kShooterSpeedPreload = 0.5;
+    public static final double kShooterSpeedLongRange = 0.6;
     
   }
 

@@ -33,8 +33,11 @@ public class Limelight {
         return armAngleRadians(distanceFromLimelightToGoalInches + distancefrompivottoLimeLight , DistanceFromPivotToSpeakerOpening, ArmLength);
     }
     public static boolean isAprilTagDetected(){
-      NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-       return table.getEntry("tv").getBoolean(false);
+        NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+        if (table !=null) {
+            return table.getEntry("tv").getBoolean(false);
+        }
+        return false;
     }
 }
 

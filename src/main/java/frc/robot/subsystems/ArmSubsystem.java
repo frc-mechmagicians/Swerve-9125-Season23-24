@@ -1,30 +1,23 @@
 package frc.robot.subsystems;
 
-import java.util.function.DoubleSupplier;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
+
 import edu.wpi.first.wpilibj.Encoder;
 
 public class ArmSubsystem extends SubsystemBase{
     private CANSparkMax m_pivotMotor;
     private CANSparkMax m_pivotMotor2;
     private Encoder m_armEncoder;
-    private double m_pos;
 
      // use some constant in Constants.java
      PIDController m_armPID = new PIDController(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
@@ -46,9 +39,7 @@ public class ArmSubsystem extends SubsystemBase{
         
         m_armEncoder = new Encoder(ArmConstants.kEncoderPort1,ArmConstants.kEncoderPort2);
         m_armEncoder.setDistancePerPulse(ArmConstants.kArmEncoderDistancePerPulse);
-        m_armPID.setTolerance(1);
-        
-        m_pos = 0;
+        m_armPID.setTolerance(0.5);
 
         // Add to smart dashboard
         SmartDashboard.putNumber("ArmAngle", 0);
@@ -86,37 +77,21 @@ public class ArmSubsystem extends SubsystemBase{
         return m_armEncoder.getStopped();
     }
 
-    /*
-    public Command positionArmCommand(DoubleSupplier angleInDegrees){
-        m_pos = angleInDegrees.getAsDouble();
-        return new FunctionalCommand(()->{}, 
-            ()->this.setSpeed(m_armPID.calculate(armPosition(), angleInDegrees.getAsDouble())),
-            reason -> this.setSpeed(0), 
-            ()-> false, this);
-    }*/
-
-
-    public Command rotateArmCommand(double angle){
-        return new InstantCommand(()->m_pos = angle);
-       // m_pos = angle;
-        // return trackLimelightCommand();
-    }
-
-    public double getPos() {
-        return m_pos;
-    }
-
     public void setPos(double angle) {
-        m_pos = angle;
+        m_armPID.setSetpoint(angle);
     }
 
-    public void trackLimelight() {
-        //double angle = Limelight.readLimelightAngle()
-        double output = m_armPID.calculate(armPosition(), m_pos);
-        setSpeed(output);
-     }
-    public Command trackLimelightCommand(){
-        return new FunctionalCommand(()->{}, ()->this.trackLimelight(), 
-            x->this.setSpeed(0), ()->{return false;}, this);
+    public Command rotateArmCommand(double angle) {
+        m_armPID.setSetpoint(angle);
+        return run(()->this.setSpeed(m_armPID.calculate(this.armPosition()))).until(m_armPID::atSetpoint);
+    }
+
+    public Command trackLimelightCommand() {
+        return run(()-> {
+            if (Limelight.isAprilTagDetected()) {
+                m_armPID.setSetpoint(Limelight.readLimelightAngle());
+            }
+            setSpeed(m_armPID.calculate(this.armPosition()));
+        });
     }
 }
