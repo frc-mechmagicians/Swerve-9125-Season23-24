@@ -101,14 +101,12 @@ public class ArmSubsystem extends SubsystemBase{
     }
 
     public Command rotateArmCommand(double angle) {
-        m_armPID.setSetpoint(angle);
-        
-            return run(()->{        
-                this.setSpeed(
-             m_armPID.calculate(this.armPosition()) +
-             m_feedforward.calculate(Math.PI*this.armPosition()/180, 
+        return run(()->{   
+            m_armPID.setSetpoint(angle); 
+            this.setSpeed(m_armPID.calculate(this.armPosition()) +
+                m_feedforward.calculate(Math.PI*this.armPosition()/180, 
                 Math.PI/180*m_armEncoder.getRate()*ArmConstants.kArmEncoderDistancePerPulse));
-            }).until(m_armPID::atSetpoint);
+         }).until(m_armPID::atSetpoint);
     }
 
     public Command trackLimelightCommand() {
