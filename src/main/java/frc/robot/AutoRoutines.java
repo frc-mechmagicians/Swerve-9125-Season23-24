@@ -45,24 +45,57 @@ public class AutoRoutines {
         );
     }
 
-
-
     public Command AutoRoutineTwoPiece() {
         return Commands.sequence(
             AutoRoutineOnePiece(), 
-            //m_shooter.runOnce(()->m_shooter.setSpeed(ShooterConstants.kShooterSpeedPreload)), // Increase shooter speed
+           
+            // Drive back until note is picked
             Commands.deadline(
                 m_intake.pickNoteCommand(IntakeConstants.kIntakeVoltage), // pick note
                 m_drive.run(()->m_drive.drive(-0.2, 0, 0, false)), // drive back
                 m_arm.rotateArmCommand(ArmConstants.kArmAnglePickNote) // Rotate arm
             ).withTimeout(2),
+
+            // pull back the note before starting shooter
             m_intake.runIntakeCommand(-0.1).unless(m_intake::hasNote).withTimeout(0.15),
             m_shooter.runOnce(()->m_shooter.setSpeed(ShooterConstants.kShooterSpeedPreload)), // Increase shooter speed
+
+            // Rotate arm to shooting posiiton while moving forard
             Commands.deadline(
                 m_arm.rotateArmCommand(ArmConstants.kArmAnglePreload), // Rotate arm
-                m_drive.run(()->m_drive.drive(0, 0.2, 0, false)) // drive forward
+                m_drive.run(()->m_drive.drive(0.2, 0, 0, false)) // drive forward
             ),
             m_intake.runIntakeCommand(IntakeConstants.kIntakeVoltage).withTimeout(0.5)// Shoot
         );
     }
+
+    public Command AutoRoutineThreePiece() {
+        return Commands.sequence(
+            AutoRoutineTwoPiece(),
+
+            // Drive left for third  note
+            m_drive.run(()->m_drive.drive(0, 0.2, 0, false)).alongWith(m_arm.rotateArmCommand(ArmConstants.kArmAnglePickNote)),
+
+                
+            // Drive back until note is picked
+            Commands.deadline(
+                m_intake.pickNoteCommand(IntakeConstants.kIntakeVoltage), // pick note
+                m_drive.run(()->m_drive.drive(-0.2, 0, 0, false)), // drive back
+                m_arm.rotateArmCommand(ArmConstants.kArmAnglePickNote) // Rotate arm
+            ).withTimeout(1.5),
+
+            // pull back the note before starting shooter
+            m_intake.runIntakeCommand(-0.1).unless(m_intake::hasNote).withTimeout(0.15),
+            m_shooter.runOnce(()->m_shooter.setSpeed(ShooterConstants.kShooterSpeedPreload)), // Increase shooter speed
+
+            // Rotate arm to shooting posiiton while moving forard
+            Commands.deadline(
+                m_arm.rotateArmCommand(ArmConstants.kArmAnglePreload), // Rotate arm
+                m_drive.run(()->m_drive.drive(0.2, 0, 0, false)) // drive forward
+            ),
+            m_intake.runIntakeCommand(IntakeConstants.kIntakeVoltage).withTimeout(0.5)// Shoot
+        );
+    }
+
+
 }
