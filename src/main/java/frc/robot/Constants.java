@@ -67,9 +67,9 @@ public final class Constants {
 
      public static final double kArmAnglePickNote = 0;
      public static final double kArmAngleAmp = 90;
-     public static final double kArmAngleSubwoofer = 5;
-     public static final double kArmAnglePreload = 20;
-     public static final double kArmAngleLongRange = 30;
+     public static final double kArmAngleSubwoofer = 13;
+     public static final double kArmAnglePreload = 22;
+     public static final double kArmAngleLongRange = 33;
      
 
   }
@@ -81,7 +81,7 @@ public final class Constants {
     public static final double kShooterSpeedAmp = 0.2;
     public static final double kShooterSpeedSubwoofer = 0.5;
     public static final double kShooterSpeedPreload = 0.6;
-    public static final double kShooterSpeedLongRange = 0.6;
+    public static final double kShooterSpeedLongRange = 0.7;
     
   }
 
@@ -152,7 +152,7 @@ public final class Constants {
     public static final double kDriveEncoderDistancePerPulse =
         // Assumes the encoders are directly mounted on the wheel shafts
 
-       (kWheelDiameterMeters* Math.PI) / 6.75; // 6.75;
+       (kWheelDiameterMeters* Math.PI) / 6.75; // 6.75; I think this is what we changed
 
      //public static final double kTurningEncoderDistancePerPulse =
     //     // Assumes the encoders are on a 1:1 reduction with the module shaft.

@@ -49,7 +49,7 @@ public class SwerveModule {
   //             ModuleConstants.kMaxModuleAngularAccelerationRadiansPerSecondSquared));
 
 
-  private final PIDController m_turningPIDController = new PIDController(ModuleConstants.kPModuleTurningController * 0.2, 0, 0); //was 0.6 when it was working but too much jerk when turning 
+  private final PIDController m_turningPIDController = new PIDController(ModuleConstants.kPModuleTurningController * 0.6, 0, 0); //was 0.6 when it was working but too much jerk when turning 
   private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.001, 0.05);
   //private final int m_turningEncoderReversed;
 
@@ -88,7 +88,7 @@ public class SwerveModule {
     m_drivePIDController.setP(0.0075);
     m_drivePIDController.setI(0);
     m_drivePIDController.setD(0);
-    m_drivePIDController.setFF(0.4);
+    m_drivePIDController.setFF(0.6);
     m_drivePIDController.setOutputRange(-1, 1);
     m_driveEncoder.setPositionConversionFactor(Constants.ModuleConstants.kDriveEncoderDistancePerPulse);
     m_driveEncoder.setVelocityConversionFactor(Constants.ModuleConstants.kDriveEncoderDistancePerPulse);

@@ -2,6 +2,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -34,7 +36,10 @@ public class AutoRoutines {
     public Command autoInit(double shooterSpeed, double armAngle){
         return Commands.sequence(
             m_shooter.runOnce(()->m_shooter.setSpeed(shooterSpeed)), // Start shooter moter
-            m_arm.resetCommand().andThen(m_arm.rotateArmCommand(armAngle)) // Rotate arm
+            m_arm.resetCommand(),
+            new InstantCommand(()->m_arm.setPos(armAngle)),
+            new RunCommand(()->{}).withTimeout(1.5)
+            //m_arm.rotateArmCommand(armAngle)) // Rotate arm
         );
 
     }
@@ -53,14 +58,14 @@ public class AutoRoutines {
             //m_shooter.runOnce(()->m_shooter.setSpeed(ShooterConstants.kShooterSpeedPreload)), // Increase shooter speed
             Commands.deadline(
                 m_intake.pickNoteCommand(IntakeConstants.kIntakeVoltage), // pick note
-                m_drive.run(()->m_drive.drive(-0.2, 0, 0, false)), // drive back
+                m_drive.run(()->m_drive.drive(-0.8, 0, 0, false)), // drive back
                 m_arm.rotateArmCommand(ArmConstants.kArmAnglePickNote) // Rotate arm
             ).withTimeout(2),
             m_intake.runIntakeCommand(-0.1).unless(m_intake::hasNote).withTimeout(0.15),
             m_shooter.runOnce(()->m_shooter.setSpeed(ShooterConstants.kShooterSpeedPreload)), // Increase shooter speed
             Commands.deadline(
                 m_arm.rotateArmCommand(ArmConstants.kArmAnglePreload), // Rotate arm
-                m_drive.run(()->m_drive.drive(0, 0.2, 0, false)) // drive forward
+                m_drive.run(()->m_drive.drive(0.8, 0, 0, false)) // drive forward
             ),
             m_intake.runIntakeCommand(IntakeConstants.kIntakeVoltage).withTimeout(0.5)// Shoot
         );
