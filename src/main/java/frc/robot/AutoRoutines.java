@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
@@ -40,7 +41,7 @@ public class AutoRoutines {
     public Command AutoRoutineOnePiece() {
         return Commands.sequence(
             this.autoInit(ShooterConstants.kShooterSpeedSubwoofer, ArmConstants.kArmAngleSubwoofer),
-            m_intake.runIntakeCommand(IntakeConstants.kIntakeVoltage).withTimeout(0.5) // Shhoot
+            m_intake.runIntakeCommand(IntakeConstants.kIntakeVoltage).withTimeout(0.5) // Shoot
         );
     }
 
@@ -49,17 +50,19 @@ public class AutoRoutines {
     public Command AutoRoutineTwoPiece() {
         return Commands.sequence(
             AutoRoutineOnePiece(), 
-            m_shooter.runOnce(()->m_shooter.setSpeed(ShooterConstants.kShooterSpeedPreload)), // Increase shooter speed
+            //m_shooter.runOnce(()->m_shooter.setSpeed(ShooterConstants.kShooterSpeedPreload)), // Increase shooter speed
             Commands.deadline(
                 m_intake.pickNoteCommand(IntakeConstants.kIntakeVoltage), // pick note
-                m_drive.run(()->m_drive.drive(0, -0.2, 0, false)), // drive back
+                m_drive.run(()->m_drive.drive(-0.2, 0, 0, false)), // drive back
                 m_arm.rotateArmCommand(ArmConstants.kArmAnglePickNote) // Rotate arm
             ).withTimeout(2),
+            m_intake.runIntakeCommand(-0.1).unless(m_intake::hasNote).withTimeout(0.15),
+            m_shooter.runOnce(()->m_shooter.setSpeed(ShooterConstants.kShooterSpeedPreload)), // Increase shooter speed
             Commands.deadline(
                 m_arm.rotateArmCommand(ArmConstants.kArmAnglePreload), // Rotate arm
                 m_drive.run(()->m_drive.drive(0, 0.2, 0, false)) // drive forward
             ),
-            m_intake.runIntakeCommand(IntakeConstants.kIntakeVoltage).withTimeout(0.5) // Shoot
+            m_intake.runIntakeCommand(IntakeConstants.kIntakeVoltage).withTimeout(0.5)// Shoot
         );
     }
 }

@@ -33,8 +33,8 @@ public class ArmSubsystem extends SubsystemBase{
         m_pivotMotor2.restoreFactoryDefaults();
         //m_pivotMotor.setInverted(true);
 
-        m_pivotMotor.setIdleMode(IdleMode.kCoast);
-        m_pivotMotor2.setIdleMode(IdleMode.kCoast);
+        m_pivotMotor.setIdleMode(IdleMode.kBrake);
+        m_pivotMotor2.setIdleMode(IdleMode.kBrake);
         m_pivotMotor.setSmartCurrentLimit(30); //Make a max current limit
         m_pivotMotor2.setSmartCurrentLimit(30); //Make a max current limit
         
