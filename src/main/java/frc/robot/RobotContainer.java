@@ -79,9 +79,9 @@ public class RobotContainer {
 
     m_arm.setDefaultCommand(m_arm.trackLimelightCommand());
     m_intake.setDefaultCommand(new RunCommand(()->
-        m_intake.setSpeed(m_operatoController.getRightY()*0.7), m_intake));
+        m_intake.setSpeed(-m_operatoController.getRightY()*0.7), m_intake));
     m_shooter.setDefaultCommand(new RunCommand(()->
-        m_shooter.setSpeed(m_operatoController.getLeftY()*0.7), m_shooter)); 
+        m_shooter.setSpeed(-m_operatoController.getLeftY()*0.7), m_shooter)); 
   }
 
   /**
