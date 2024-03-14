@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -43,14 +44,14 @@ public final class Constants {
     public static final int kEncoderPort2 = 1;
     public static final int kLeftPivotMotorPort = 9;
     public static final int kRightPivotMotorPort = 10;
-    public static final double kArmEncoderDistancePerPulse = 90.0/520.0; // 90.0/2400; //degrees
-    public static final double kP = 0.1;
-    public static final double kI = 0;
+    public static final double kArmEncoderDistancePerPulse = 360.0/2048.0; // 90.0/2400; //degrees
+    public static final double kP = 0.3; //0.35
+    public static final double kI = 0;//0
     public static final double kD = 0.0;
-    public static final double ks = 0.1;
-    public static final double kg = 0.1; //.5
-    public static final double kv = 0.01;//0.08
-    public static final double ka = 0.00;
+    public static final double ks = 0;
+    public static final double kg = 0.4; //.5
+    public static final double kv = 4.68;//0.08
+    public static final double ka = 0.03;
     public static final double kFeedforwardVelocity = 0.1;
     /* Reca.lc
      * Motor: 2
@@ -66,9 +67,10 @@ public final class Constants {
 
      public static final double kArmAnglePickNote = 0;
      public static final double kArmAngleAmp = 90;
-     public static final double kArmAngleSubwoofer = 15;
+     public static final double kArmAngleSubwoofer = 5;
      public static final double kArmAnglePreload = 20;
      public static final double kArmAngleLongRange = 30;
+     
 
   }
 
@@ -77,8 +79,8 @@ public final class Constants {
     public static final int kRightShooterMotorPort = 15; // sparkflex
          
     public static final double kShooterSpeedAmp = 0.2;
-    public static final double kShooterSpeedSubwoofer = 0.4;
-    public static final double kShooterSpeedPreload = 0.5;
+    public static final double kShooterSpeedSubwoofer = 0.5;
+    public static final double kShooterSpeedPreload = 0.6;
     public static final double kShooterSpeedLongRange = 0.6;
     
   }

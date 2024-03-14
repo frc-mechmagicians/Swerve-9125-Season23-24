@@ -30,13 +30,21 @@ public class AutoRoutines {
 
     }
 
+    public Command autoInit(double shooterSpeed, double armAngle){
+        return Commands.sequence(
+            m_shooter.runOnce(()->m_shooter.setSpeed(shooterSpeed)), // Start shooter moter
+            m_arm.resetCommand().andThen(m_arm.rotateArmCommand(armAngle)) // Rotate arm
+        );
+
+    }
     public Command AutoRoutineOnePiece() {
         return Commands.sequence(
-            m_shooter.runOnce(()->m_shooter.setSpeed(ShooterConstants.kShooterSpeedSubwoofer)), // Start shooter moter
-            m_arm.rotateArmCommand(ArmConstants.kArmAngleSubwoofer), // Rotate arm
+            this.autoInit(ShooterConstants.kShooterSpeedSubwoofer, ArmConstants.kArmAngleSubwoofer),
             m_intake.runIntakeCommand(IntakeConstants.kIntakeVoltage).withTimeout(0.5) // Shhoot
         );
     }
+
+
 
     public Command AutoRoutineTwoPiece() {
         return Commands.sequence(

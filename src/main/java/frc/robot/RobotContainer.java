@@ -81,7 +81,7 @@ public class RobotContainer {
     m_intake.setDefaultCommand(new RunCommand(()->
         m_intake.setSpeed(m_operatoController.getRightY()*0.7), m_intake));
     m_shooter.setDefaultCommand(new RunCommand(()->
-        m_shooter.setSpeed(m_operatoController.getLeftY()*0.7), m_intake)); 
+        m_shooter.setSpeed(m_operatoController.getLeftY()*0.7), m_shooter)); 
   }
 
   /**
@@ -113,13 +113,15 @@ public class RobotContainer {
     xboxButtonIntake.whileTrue(m_intake.runIntakeCommand(IntakeConstants.kIntakeVoltage));
 
     // PickNote
-    final JoystickButton xboxButtonShoot = new JoystickButton(m_operatoController, XboxController.Button.kRightBumper.value);
-    xboxButtonShoot.whileTrue(
+    final JoystickButton xboxButtonPick = new JoystickButton(m_operatoController, XboxController.Button.kRightBumper.value);
+    xboxButtonPick.whileTrue(
       new InstantCommand(()->m_arm.setPos(ArmConstants.kArmAnglePickNote))
       .andThen(m_intake.pickNoteCommand(IntakeConstants.kIntakeVoltage))
       .andThen(new InstantCommand(() -> {
         if (m_intake.hasNote()) m_arm.setPos(ArmConstants.kArmAngleSubwoofer);
       })));
+
+    xboxButtonPick.onFalse(m_intake.runIntakeCommand(-1).unless(m_intake::hasNote).withTimeout(0.15));
 
   }
 

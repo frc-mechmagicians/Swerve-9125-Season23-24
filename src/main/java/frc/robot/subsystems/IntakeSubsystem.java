@@ -14,8 +14,10 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import com.revrobotics.*;
 import com.revrobotics.Rev2mDistanceSensor.Port;
@@ -73,7 +75,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   // hasNote
   public boolean hasNote(){ 
-    if (distOnboard.isRangeValid() && distOnboard.getRange() < 10){ 
+    if (distOnboard.isRangeValid() && distOnboard.getRange() < 7){ 
       return true;
     }
     return false;
@@ -81,7 +83,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
   // pickNoteCommand
   public Command pickNoteCommand(double voltage) {
-    return runIntakeCommand(voltage).until(this::hasNote); // add .until (hasNote is true) to end
-  }
+    return runIntakeCommand(voltage).until(this::hasNote);
+    }
+
 }
  
