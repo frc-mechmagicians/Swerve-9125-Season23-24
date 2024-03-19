@@ -70,18 +70,18 @@ public class RobotContainer {
                     // Multiply by max speed to map the joystick unitless inputs to actual units.
                     // This will map the [-1, 1] to [max speed backwards, max speed forwards],
                     // converting them to actual units.
-                    m_driverController.getLeftY() * DriveConstants.kMaxSpeedMetersPerSecond,
-                    -m_driverController.getLeftX() * DriveConstants.kMaxSpeedMetersPerSecond, //changed this to negative
-                    -m_driverController.getRawAxis(4)
+                    (m_driverController.getLeftY() * m_driverController.getLeftY() * Math.signum(m_driverController.getLeftY()))* DriveConstants.kMaxSpeedMetersPerSecond ,
+                    -(m_driverController.getLeftX() * m_driverController.getLeftX() * Math.signum(m_driverController.getLeftX())) * DriveConstants.kMaxSpeedMetersPerSecond, //changed this to negative
+                    -m_driverController.getRawAxis(4)/3
                         * ModuleConstants.kMaxModuleAngularSpeedRadiansPerSecond,
                     true),
             m_robotDrive));
 
     m_arm.setDefaultCommand(m_arm.trackLimelightCommand());
-    m_intake.setDefaultCommand(new RunCommand(()->
-        m_intake.setSpeed(-m_operatoController.getRightY()*0.7), m_intake));
-    m_shooter.setDefaultCommand(new RunCommand(()->
-        m_shooter.setSpeed(-m_operatoController.getLeftY()*0.7), m_shooter)); 
+    // m_intake.setDefaultCommand(new RunCommand(()->
+    //     m_intake.setSpeed(-m_operatoController.getRightY()*0.7), m_intake));
+    // m_shooter.setDefaultCommand(new RunCommand(()->
+    //     m_shooter.setSpeed(-m_operatoController.getLeftY()*0.7), m_shooter)); 
   }
 
   /**
@@ -92,7 +92,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Speaker1 - Subwoofer
-    final JoystickButton xboxButtonSp1 = new JoystickButton(m_operatoController, XboxController.Button.kY.value);        
+    final JoystickButton xboxButtonSp1 = new JoystickButton(m_operatoController, XboxController.Button.kA.value);        
     xboxButtonSp1.whileTrue(new ParallelCommandGroup(new InstantCommand(()->m_arm.setPos(ArmConstants.kArmAngleSubwoofer)),
                            (m_shooter.runShooterCommand(()->ShooterConstants.kShooterSpeedSubwoofer))));
     // Speaker2 - preload
@@ -104,7 +104,7 @@ public class RobotContainer {
     xboxButtonSp3.whileTrue(new ParallelCommandGroup(new InstantCommand(()->m_arm.setPos(ArmConstants.kArmAngleLongRange)), 
       m_shooter.runShooterCommand(()->ShooterConstants.kShooterSpeedLongRange)));
     //Amp
-     final JoystickButton xboxButtonAmp = new JoystickButton(m_operatoController, XboxController.Button.kA.value);        
+     final JoystickButton xboxButtonAmp = new JoystickButton(m_operatoController, XboxController.Button.kY.value);        
     xboxButtonAmp.whileTrue(new ParallelCommandGroup(new InstantCommand(()->m_arm.setPos(ArmConstants.kArmAngleAmp)), 
       m_shooter.runShooterCommand(()->ShooterConstants.kShooterSpeedAmp)));
 
@@ -123,6 +123,8 @@ public class RobotContainer {
 
     xboxButtonPick.onFalse(m_intake.runIntakeCommand(-1).unless(m_intake::hasNote).withTimeout(0.15));
 
+    final JoystickButton PS4GyroReset = new JoystickButton(m_driverController, PS4Controller.Button.kCross.value);
+    PS4GyroReset.onTrue(new InstantCommand(()->m_robotDrive.zeroHeading()));
   }
 
   public IntakeSubsystem getIntake(){
@@ -136,7 +138,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return m_auto.AutoRoutineOnePiece();
+    return m_auto.AutoRoutineTwoPiece();
   }
 
 

@@ -49,7 +49,8 @@ public class SwerveModule {
   //             ModuleConstants.kMaxModuleAngularAccelerationRadiansPerSecondSquared));
 
 
-  private final PIDController m_turningPIDController = new PIDController(ModuleConstants.kPModuleTurningController * 0.6, 0, 0); //was 0.6 when it was working but too much jerk when turning 
+  private final PIDController m_turningPIDController = new PIDController(ModuleConstants.kPModuleTurningController*11, 0, 0); //was 0.6 when it was working but too much jerk when turning 
+  // changed to 13 and it became jerky, was 14 first?
   private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.001, 0.05);
   //private final int m_turningEncoderReversed;
 
@@ -74,8 +75,8 @@ public class SwerveModule {
     m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
    // m_driveMotor.restoreFactoryDefaults();
     //m_turningMotor.restoreFactoryDefaults();
-    //m_driveMotor.setSmartCurrentLimit(Constants.generalMotorSmartLimit);
-   // m_turningMotor.setSmartCurrentLimit(Constants.generalMotorSmartLimit);
+    m_driveMotor.setSmartCurrentLimit(40);
+  m_turningMotor.setSmartCurrentLimit(30);
    m_turningMotor.setIdleMode(IdleMode.kBrake);
 
     m_driveEncoder = m_driveMotor.getEncoder();
@@ -88,7 +89,7 @@ public class SwerveModule {
     m_drivePIDController.setP(0.0075);
     m_drivePIDController.setI(0);
     m_drivePIDController.setD(0);
-    m_drivePIDController.setFF(0.6);
+    m_drivePIDController.setFF(0.9);
     m_drivePIDController.setOutputRange(-1, 1);
     m_driveEncoder.setPositionConversionFactor(Constants.ModuleConstants.kDriveEncoderDistancePerPulse);
     m_driveEncoder.setVelocityConversionFactor(Constants.ModuleConstants.kDriveEncoderDistancePerPulse);

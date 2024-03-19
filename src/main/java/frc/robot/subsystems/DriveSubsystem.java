@@ -138,6 +138,10 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
     m_rearRight.setDesiredState(swerveModuleStates[3]);
+    SmartDashboard.putNumber("frontLeftAngActual", m_frontLeft.getTurningPosition());
+    SmartDashboard.putNumber("backLeftAngActual", m_rearLeft.getTurningPosition());
+    SmartDashboard.putNumber("frontRightAngActual", m_frontRight.getTurningPosition());
+    SmartDashboard.putNumber("backRightAngActual", m_rearRight.getTurningPosition());
     SmartDashboard.putNumber("FrontLeftSpeed", swerveModuleStates[0].speedMetersPerSecond);
     SmartDashboard.putNumber("FrontRightSpeed", swerveModuleStates[1].speedMetersPerSecond);
     SmartDashboard.putNumber("BackLeftSpeed", swerveModuleStates[2].speedMetersPerSecond);

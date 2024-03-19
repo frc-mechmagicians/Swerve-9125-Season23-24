@@ -36,7 +36,7 @@ public final class Constants {
 
   public static final class IntakeConstants {
     public static final int kIntakeMotorPort = 17; //spark flex 
-    public static final int kIntakeVoltage = 3;
+    public static final int kIntakeVoltage = 4; //chg to 4
   }
 
   public static final class ArmConstants {
@@ -45,7 +45,7 @@ public final class Constants {
     public static final int kLeftPivotMotorPort = 9;
     public static final int kRightPivotMotorPort = 10;
     public static final double kArmEncoderDistancePerPulse = 360.0/2048.0; // 90.0/2400; //degrees
-    public static final double kP = 0.3; //0.35
+    public static final double kP = 0.27; //0.35
     public static final double kI = 0;//0
     public static final double kD = 0.0;
     public static final double ks = 0;
@@ -67,9 +67,9 @@ public final class Constants {
 
      public static final double kArmAnglePickNote = 0;
      public static final double kArmAngleAmp = 90;
-     public static final double kArmAngleSubwoofer = 13;
-     public static final double kArmAnglePreload = 22;
-     public static final double kArmAngleLongRange = 33;
+     public static final double kArmAngleSubwoofer = 20.5;
+     public static final double kArmAnglePreload = 21;
+     public static final double kArmAngleLongRange = 32;
      
 
   }
@@ -79,8 +79,8 @@ public final class Constants {
     public static final int kRightShooterMotorPort = 15; // sparkflex
          
     public static final double kShooterSpeedAmp = 0.2;
-    public static final double kShooterSpeedSubwoofer = 0.5;
-    public static final double kShooterSpeedPreload = 0.6;
+    public static final double kShooterSpeedSubwoofer = 0.6;
+    public static final double kShooterSpeedPreload = 0.65;
     public static final double kShooterSpeedLongRange = 0.7;
     
   }
