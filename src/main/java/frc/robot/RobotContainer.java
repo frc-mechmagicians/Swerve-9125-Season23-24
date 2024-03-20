@@ -138,7 +138,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return m_auto.AutoRoutineTwoPiece();
+    return getAutonomousCommand3();
   }
 
 
@@ -204,26 +204,55 @@ public class RobotContainer {
             // Add kinematics to ensure max speed is actually obeyed
             .setKinematics(DriveConstants.kDriveKinematics);
 
-        Trajectory exampleTrajectory =
-        TrajectoryGenerator.generateTrajectory(
-            // Start at the origin facing the +X direction
-            new Pose2d(0, 0, new Rotation2d(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(0.8264, 0)),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(0.8264, 0, new Rotation2d(0)),
-            config);
+    //               var thetaController =
+    //     new ProfiledPIDController(
+    //         AutoConstants.kPThetaController*0.2, 0, 0, AutoConstants.kThetaControllerConstraints);
+    // thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    var traj1_1 = auto3_1(config);
+        SwerveControllerCommand autoPick1 = setSwerveCommand(traj1_1);
+    var traj1_2 = auto3_1_2(config);
+        SwerveControllerCommand autoShootPos1 = setSwerveCommand(traj1_2);
+      // new SwerveControllerCommand(
+      //     traj1,
+      //     m_robotDrive::getPose, // Functional interface to feed supplier
+      //     DriveConstants.kDriveKinematics,
+
+      //     // Position controllers
+      //     new PIDController(AutoConstants.kPXController, 0, 0), 
+      //     new PIDController(AutoConstants.kPYController, 0, 0),
+      //     thetaController,
+      //     m_robotDrive::setModuleStates,
+      //     m_robotDrive);
+    var traj2_1 = auto3_2(config);
+        SwerveControllerCommand autoPick2 = setSwerveCommand(traj2_1);
+    var traj2_2 = auto3_2_2(config);
+        SwerveControllerCommand autoShootPos2 = setSwerveCommand(traj2_2);
+    var traj3_1 = auto3_3(config);
+        SwerveControllerCommand autoPos3 = setSwerveCommand(traj3_1);
+
+
+
+    return Commands.sequence(
+        new InstantCommand(() -> m_robotDrive.resetOdometry(traj1_1.getInitialPose())),
+        autoPick1,
+        autoShootPos1,
+        autoPick2,
+        autoShootPos2,
+        autoPos3,
+        new InstantCommand(() -> m_robotDrive.drive(0, 0, 0, false)));
+  
+  }
+
+  public SwerveControllerCommand setSwerveCommand(Trajectory traj){
     
-
-
-      var thetaController =
+    var thetaController =
         new ProfiledPIDController(
             AutoConstants.kPThetaController*0.2, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-      SwerveControllerCommand swerveControllerCommand =
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);  
+    SwerveControllerCommand autoTraj =
       new SwerveControllerCommand(
-          exampleTrajectory,
+          traj,
           m_robotDrive::getPose, // Functional interface to feed supplier
           DriveConstants.kDriveKinematics,
 
@@ -233,12 +262,7 @@ public class RobotContainer {
           thetaController,
           m_robotDrive::setModuleStates,
           m_robotDrive);
-
-    return Commands.sequence(
-        new InstantCommand(() -> m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose())),
-        swerveControllerCommand,
-        new InstantCommand(() -> m_robotDrive.drive(0, 0, 0, false)));
-  
+      return autoTraj;
   }
 
   public Trajectory auto3_1(TrajectoryConfig config){
@@ -310,48 +334,50 @@ public class RobotContainer {
 
 
 
-  public Command getAutonomousCommand3_1() {
-    // Create config for trajectory
-    TrajectoryConfig config =
-        new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(DriveConstants.kDriveKinematics);
+  // public Command getAutonomousCommand3_1() {
+  //   // Create config for trajectory
+  //   TrajectoryConfig config =
+  //       new TrajectoryConfig(
+  //               AutoConstants.kMaxSpeedMetersPerSecond-2.5,
+  //               AutoConstants.kMaxAccelerationMetersPerSecondSquared-2.5)
+  //           // Add kinematics to ensure max speed is actually obeyed
+  //           .setKinematics(DriveConstants.kDriveKinematics);
 
-        Trajectory exampleTrajectory =
-        TrajectoryGenerator.generateTrajectory(
-            // Start at the origin facing the +X direction
-            new Pose2d(0, 0, new Rotation2d(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(0.8264, 0)),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(0.8264, 0, new Rotation2d(0)),
-            config);
+  //       Trajectory exampleTrajectory =
+  //       TrajectoryGenerator.generateTrajectory(
+  //           // Start at the origin facing the +X direction
+  //           new Pose2d(0, 0, new Rotation2d(0)),
+  //           // Pass through these two interior waypoints, making an 's' curve path
+  //           List.of(),
+  //           // End 3 meters straight ahead of where we started, facing forward
+  //           new Pose2d(.5, 0.5, new Rotation2d(Math.PI/4)),
+  //           config);
     
 
       
-      var thetaController =
-        new ProfiledPIDController(
-            AutoConstants.kPThetaController*0.2, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+  //     var thetaController =
+  //       new ProfiledPIDController(
+  //           AutoConstants.kPThetaController*0.2, 0, 0, AutoConstants.kThetaControllerConstraints);
+  //   thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-      SwerveControllerCommand swerveControllerCommand =
-      new SwerveControllerCommand(
-          exampleTrajectory,
-          m_robotDrive::getPose, // Functional interface to feed supplier
-          DriveConstants.kDriveKinematics,
+  //     SwerveControllerCommand swerveControllerCommand =
+  //     new SwerveControllerCommand(
+  //         exampleTrajectory,
+  //         m_robotDrive::getPose, // Functional interface to feed supplier
+  //         DriveConstants.kDriveKinematics,
 
-          // Position controllers
-          new PIDController(AutoConstants.kPXController, 0, 0), 
-          new PIDController(AutoConstants.kPYController, 0, 0),
-          thetaController,
-          m_robotDrive::setModuleStates,
-          m_robotDrive);
+  //         // Position controllers
+  //         new PIDController(AutoConstants.kPXController, 0, 0), 
+  //         new PIDController(AutoConstants.kPYController, 0, 0),
+  //         thetaController,
+  //         m_robotDrive::setModuleStates,
+  //         m_robotDrive);
 
-    return Commands.sequence(
-        new InstantCommand(() -> m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose())),
-        swerveControllerCommand,
-        new InstantCommand(() -> m_robotDrive.drive(0, 0, 0, false)));
-  }
+  //  // m_robotDrive.resetEncoders();
+  //   return Commands.sequence(
+  //       new InstantCommand(() -> m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose())),
+  //       swerveControllerCommand,
+  //       new InstantCommand(() -> m_robotDrive.drive(0, 0, 0, false)));
+  // }
+  
 }

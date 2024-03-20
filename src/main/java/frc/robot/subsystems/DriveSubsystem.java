@@ -138,24 +138,27 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
     m_rearRight.setDesiredState(swerveModuleStates[3]);
-    SmartDashboard.putNumber("frontLeftAngActual", m_frontLeft.getTurningPosition());
-    SmartDashboard.putNumber("backLeftAngActual", m_rearLeft.getTurningPosition());
-    SmartDashboard.putNumber("frontRightAngActual", m_frontRight.getTurningPosition());
-    SmartDashboard.putNumber("backRightAngActual", m_rearRight.getTurningPosition());
-    SmartDashboard.putNumber("FrontLeftSpeed", swerveModuleStates[0].speedMetersPerSecond);
-    SmartDashboard.putNumber("FrontRightSpeed", swerveModuleStates[1].speedMetersPerSecond);
-    SmartDashboard.putNumber("BackLeftSpeed", swerveModuleStates[2].speedMetersPerSecond);
-    SmartDashboard.putNumber("BackRightSpeed", swerveModuleStates[3].speedMetersPerSecond);
-    SmartDashboard.putNumber("FrontLeftAng", swerveModuleStates[0].angle.getRadians());
-    SmartDashboard.putNumber("FrontRightAng", swerveModuleStates[1].angle.getRadians());
-    SmartDashboard.putNumber("BackLeftAng", swerveModuleStates[2].angle.getRadians());
-    SmartDashboard.putNumber("BackRightAng", swerveModuleStates[3].angle.getRadians());
-    SmartDashboard.putNumber("rot", rot);
+  //   SmartDashboard.putNumber("frontLeftAngActual", m_frontLeft.getTurningPosition());
+  //   SmartDashboard.putNumber("backLeftAngActual", m_rearLeft.getTurningPosition());
+  //   SmartDashboard.putNumber("frontRightAngActual", m_frontRight.getTurningPosition());
+  //   SmartDashboard.putNumber("backRightAngActual", m_rearRight.getTurningPosition());
+  //   SmartDashboard.putNumber("FrontLeftSpeed", swerveModuleStates[0].speedMetersPerSecond);
+  //   SmartDashboard.putNumber("FrontRightSpeed", swerveModuleStates[1].speedMetersPerSecond);
+  //   SmartDashboard.putNumber("BackLeftSpeed", swerveModuleStates[2].speedMetersPerSecond);
+  //   SmartDashboard.putNumber("BackRightSpeed", swerveModuleStates[3].speedMetersPerSecond);
+  //   SmartDashboard.putNumber("FrontLeftAng", swerveModuleStates[0].angle.getRadians());
+  //   SmartDashboard.putNumber("FrontRightAng", swerveModuleStates[1].angle.getRadians());
+  //   SmartDashboard.putNumber("BackLeftAng", swerveModuleStates[2].angle.getRadians());
+  //   SmartDashboard.putNumber("BackRightAng", swerveModuleStates[3].angle.getRadians());
+  //   SmartDashboard.putNumber("rot", rot);
+
+    SmartDashboard.putNumber("FLDriveEncoderDistance", m_frontLeft.getPosition().distanceMeters);
+    SmartDashboard.putNumber("FRDriveEncoderDistance", m_frontRight.getPosition().distanceMeters);
+    SmartDashboard.putNumber("RLDriveEncoderDistance", m_rearLeft.getPosition().distanceMeters);
+    SmartDashboard.putNumber("RRDriveEncoderDistance", m_rearRight.getPosition().distanceMeters);
 
 
-
-
-  }
+   }
 
   /**
    * Sets the swerve ModuleStates.

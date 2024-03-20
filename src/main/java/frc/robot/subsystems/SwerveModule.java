@@ -78,6 +78,7 @@ public class SwerveModule {
     m_driveMotor.setSmartCurrentLimit(40);
   m_turningMotor.setSmartCurrentLimit(30);
    m_turningMotor.setIdleMode(IdleMode.kBrake);
+   m_driveMotor.setIdleMode(IdleMode.kBrake);
 
     m_driveEncoder = m_driveMotor.getEncoder();
 
