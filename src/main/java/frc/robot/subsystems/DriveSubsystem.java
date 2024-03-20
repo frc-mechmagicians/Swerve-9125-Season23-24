@@ -57,18 +57,19 @@ public class DriveSubsystem extends SubsystemBase {
           DriveConstants.kRearRightTurningEncoderReversed);
 
   // The gyro sensor
-  public final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
+  //public final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
+  public final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro();
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry =
       new SwerveDriveOdometry(
           DriveConstants.kDriveKinematics,
-          new Rotation2d(-m_gyro.getAngle()*Math.PI/180),
+          m_gyro.getRotation2d(),
           new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
             m_rearLeft.getPosition(),
-            m_rearRight.getPosition()
+            m_rearRight.getPosition(),
           });
 
 
@@ -79,7 +80,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     // Update the odometry in the periodic block
     m_odometry.update(
-        new Rotation2d(-m_gyro.getAngle()*Math.PI/180),
+      m_gyro.getRotation2d(),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -105,7 +106,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     m_odometry.resetPosition(
-        new Rotation2d(-m_gyro.getAngle()*Math.PI/180),
+        m_gyro.getRotation2d(),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
           m_frontRight.getPosition(),
@@ -129,8 +130,8 @@ public class DriveSubsystem extends SubsystemBase {
             ChassisSpeeds.discretize(
                 fieldRelative
                     ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                        xSpeed, ySpeed, rot, new Rotation2d(-m_gyro.getAngle()*Math.PI/180))
-                    : new ChassisSpeeds(xSpeed, ySpeed, rot),
+                        -xSpeed, ySpeed, rot, m_gyro.getRotation2d())
+                    : new ChassisSpeeds(-xSpeed, ySpeed, rot),
                 DriveConstants.kDrivePeriod));
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
@@ -193,7 +194,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return -m_gyro.getAngle();
+    return m_gyro.getRotation2d().getDegrees();
   }
 
   /**

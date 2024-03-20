@@ -9,7 +9,9 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -50,6 +52,8 @@ public class RobotContainer {
   public  final IntakeSubsystem m_intake = new IntakeSubsystem();
   public final ShooterSubsystem m_shooter = new ShooterSubsystem();
   public final AutoRoutines m_auto = new AutoRoutines(m_robotDrive, m_arm, m_intake, m_shooter); 
+  public  double m_robotY = 0.9176+0.25;
+  public  double m_robotX = 2.6578;
 
   // The driver's controller
   PS4Controller m_driverController = new PS4Controller(OIConstants.kDriverControllerPort);
@@ -70,7 +74,7 @@ public class RobotContainer {
                     // Multiply by max speed to map the joystick unitless inputs to actual units.
                     // This will map the [-1, 1] to [max speed backwards, max speed forwards],
                     // converting them to actual units.
-                    (m_driverController.getLeftY() * m_driverController.getLeftY() * Math.signum(m_driverController.getLeftY()))* DriveConstants.kMaxSpeedMetersPerSecond ,
+                    -(m_driverController.getLeftY() * m_driverController.getLeftY() * Math.signum(m_driverController.getLeftY()))* DriveConstants.kMaxSpeedMetersPerSecond ,
                     -(m_driverController.getLeftX() * m_driverController.getLeftX() * Math.signum(m_driverController.getLeftX())) * DriveConstants.kMaxSpeedMetersPerSecond, //changed this to negative
                     -m_driverController.getRawAxis(4)/3
                         * ModuleConstants.kMaxModuleAngularSpeedRadiansPerSecond,
@@ -211,8 +215,6 @@ public class RobotContainer {
 
     var traj1_1 = auto3_1(config);
         SwerveControllerCommand autoPick1 = setSwerveCommand(traj1_1);
-    var traj1_2 = auto3_1_2(config);
-        SwerveControllerCommand autoShootPos1 = setSwerveCommand(traj1_2);
       // new SwerveControllerCommand(
       //     traj1,
       //     m_robotDrive::getPose, // Functional interface to feed supplier
@@ -226,23 +228,50 @@ public class RobotContainer {
       //     m_robotDrive);
     var traj2_1 = auto3_2(config);
         SwerveControllerCommand autoPick2 = setSwerveCommand(traj2_1);
-    var traj2_2 = auto3_2_2(config);
-        SwerveControllerCommand autoShootPos2 = setSwerveCommand(traj2_2);
     var traj3_1 = auto3_3(config);
-        SwerveControllerCommand autoPos3 = setSwerveCommand(traj3_1);
+        SwerveControllerCommand autoPick3 = setSwerveCommand(traj3_1);
+
 
 
 
     return Commands.sequence(
         new InstantCommand(() -> m_robotDrive.resetOdometry(traj1_1.getInitialPose())),
-        autoPick1,
-        autoShootPos1,
         autoPick2,
-        autoShootPos2,
-        autoPos3,
+        //autoPick1,
+        //autoPick3,
         new InstantCommand(() -> m_robotDrive.drive(0, 0, 0, false)));
   
   }
+
+
+  public Command getAutonomous3AwayFromSubwoofer(){
+    TrajectoryConfig config = new TrajectoryConfig(
+                AutoConstants.kMaxSpeedMetersPerSecond-2,
+                AutoConstants.kMaxAccelerationMetersPerSecondSquared-2)
+            // Add kinematics to ensure max speed is actually obeyed
+            .setKinematics(DriveConstants.kDriveKinematics);
+
+    var traj1 = auto3Far_1(config);
+        SwerveControllerCommand autoPick1 = setSwerveCommand(traj1);
+    var traj1_1 = auto3Far_1_Shoot(config);
+        SwerveControllerCommand autoShootPos1 = setSwerveCommand(traj1_1);
+    var traj2 = auto3Far_2(config);
+        SwerveControllerCommand autoPick2 = setSwerveCommand(traj2);
+    var traj2_1 = auto3Far_2_Shoot(config);
+        SwerveControllerCommand autoShootPos2= setSwerveCommand(traj2_1);
+
+    return Commands.sequence(
+        new InstantCommand(() -> m_robotDrive.resetOdometry(traj1.getInitialPose())),
+         autoPick1,
+         autoShootPos1,
+        autoPick2,
+        autoShootPos2,
+        new InstantCommand(() -> m_robotDrive.drive(0, 0, 0, false)));
+  
+
+  }
+  
+
 
   public SwerveControllerCommand setSwerveCommand(Trajectory traj){
     
@@ -265,72 +294,106 @@ public class RobotContainer {
       return autoTraj;
   }
 
-  public Trajectory auto3_1(TrajectoryConfig config){
-        Trajectory exampleTrajectory =
+
+  public Trajectory auto3Far_1(TrajectoryConfig config){
+            Trajectory exampleTrajectory =
         TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(0.8, 0)),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(0.8264, 0, new Rotation2d(0)),
+            List.of(new Translation2d(0.2, 0),new Translation2d(1.4, -3.35)),
+            // End 3 meters straight ahead of wh`ere we started, facing forward
+            new Pose2d(8.1, -3.35, new Rotation2d(0)),
             config);
         return exampleTrajectory;
   }
 
-    public Trajectory auto3_1_2(TrajectoryConfig config){
+  public Trajectory auto3Far_1_Shoot(TrajectoryConfig config){
         Trajectory exampleTrajectory =
+        TrajectoryGenerator.generateTrajectory(new Pose2d(8.1,-3.35, new Rotation2d(0)),
+        List.of(new Translation2d(2, -3.34),new Translation2d(1, 0)),
+        new Pose2d(0.4, 0, new Rotation2d(0)), config);
+        return exampleTrajectory;
+  }
+
+    public Trajectory auto3Far_2(TrajectoryConfig config){
+            Trajectory exampleTrajectory =
         TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
-            new Pose2d(0.8264, 0, new Rotation2d(0)),
+            new Pose2d(0.4, 0, new Rotation2d(0)),
             // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(0.5, 0)),
-            // End 3 meters straight ahead of where we started, facing forward
+            List.of(new Translation2d(0.8, -2), new Translation2d(4, -2.5),new Translation2d(7.3, -2.5)),
+            // End 3 meters straight ahead of wh`ere we started, facing forward
+            new Pose2d(8.1, -1.63, new Rotation2d(0)),
+            config);
+        return exampleTrajectory;
+  }
+
+    public Trajectory auto3Far_2_Shoot(TrajectoryConfig config){
+            Trajectory exampleTrajectory =
+        TrajectoryGenerator.generateTrajectory(
+            // Start at the origin facing the +X direction
+            new Pose2d(8.1, -1.63, new Rotation2d(0)),
+            // Pass through these two interior waypoints, making an 's' curve path
+            List.of(new Translation2d(7.3, -2.5), new Translation2d(3, -2.5), new Translation2d(0.8, -2)),
+            // End 3 meters straight ahead of wh`ere we started, facing forward
             new Pose2d(0.4, 0, new Rotation2d(0)),
             config);
         return exampleTrajectory;
   }
 
-  public Trajectory auto3_2(TrajectoryConfig config){
+
+  public Pose2d notePose(double loc[], double xOffset, double yOffset, double angleInDegrees) {
+    return new Pose2d(-(loc[0]-m_robotX+xOffset), -(loc[1]-m_robotY+yOffset), new Rotation2d(Math.PI/180*angleInDegrees));
+
+  }
+  public Trajectory auto3_1(TrajectoryConfig config){
         Trajectory exampleTrajectory =
         TrajectoryGenerator.generateTrajectory(
+          List.of(
             // Start at the origin facing the +X direction
-            new Pose2d(0.4, 0, new Rotation2d(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(0.4, -0.9), new Translation2d(0.6, -1.4478)),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(0.8264, -1.4478, new Rotation2d(0)),
+            new Pose2d(0, 0, new Rotation2d(0)),
+            notePose(Constants.note2Location, 0,0,0)),
             config);
         return exampleTrajectory;
   }
 
-  public Trajectory auto3_2_2(TrajectoryConfig config){
+    public Trajectory auto3_2(TrajectoryConfig config){
         Trajectory exampleTrajectory =
         TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
-            new Pose2d(0.8264, -1.4478, new Rotation2d(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(0.6, -0.9), new Translation2d(0.6, 0)),
+            List.of(
+              notePose(Constants.note2Location, 0,0,0),
+              notePose(Constants.note1Location, 0.5,-0.5,-45),
+              notePose(Constants.note1Location, 0,0,-45)),
+
+              // new Pose2d(Constants.note2Location[1], Constants.note2Location[0], new Rotation2d(0)),
+              // new Pose2d(Constants.note1Location[1]+0.5, Constants.note1Location[0]-0.5, new Rotation2d(Math.PI/4)),
+              // new Pose2d(Constants.note1Location[1], Constants.note1Location[0], new Rotation2d(Math.PI/4))),
+            // Pass through these two interior waypoints, making an 's' curve path),
             // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(0.4, 0, new Rotation2d(0)),
             config);
         return exampleTrajectory;
   }
-
-
 
   public Trajectory auto3_3(TrajectoryConfig config){
         Trajectory exampleTrajectory =
         TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
-            new Pose2d(0.8264, -1.4478, new Rotation2d(0)),
             // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(0.6, -0.9), new Translation2d(0.6, 0)),
+            List.of(
+              notePose(Constants.note1Location, 0, 0, -45),
+              notePose(Constants.note3Location, -0.5, -0.5, 45),
+              notePose(Constants.note3Location, 0, 0, 45)),
+
+            // new Pose2d(Constants.note1Location[1], Constants.note1Location[0], new Rotation2d(Math.PI/4)),
+            // new Pose2d(Constants.note3Location[1]+0.5, Constants.note3Location[0]+0.5, new Rotation2d(-Math.PI/4)),
+            // new Pose2d(Constants.note3Location[1], Constants.note3Location[0], new Rotation2d(-Math.PI/4))),
             // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(0.4, 0, new Rotation2d(0)),
             config);
         return exampleTrajectory;
   }
+
 
 
 
