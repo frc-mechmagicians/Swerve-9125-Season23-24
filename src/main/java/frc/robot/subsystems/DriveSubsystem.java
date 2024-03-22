@@ -88,6 +88,14 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
         });
 
+    SmartDashboard.putNumber("FLDriveEncoderDistance", m_frontLeft.getPosition().distanceMeters);
+    SmartDashboard.putNumber("FRDriveEncoderDistance", m_frontRight.getPosition().distanceMeters);
+    SmartDashboard.putNumber("RLDriveEncoderDistance", m_rearLeft.getPosition().distanceMeters);
+    SmartDashboard.putNumber("RRDriveEncoderDistance", m_rearRight.getPosition().distanceMeters);
+    SmartDashboard.putNumber("xPOS", getPose().getX());
+    SmartDashboard.putNumber("yPOS", getPose().getY());
+    SmartDashboard.putNumber("angle", getPose().getRotation().getDegrees());
+
   }
 
   /**
@@ -130,7 +138,7 @@ public class DriveSubsystem extends SubsystemBase {
             ChassisSpeeds.discretize(
                 fieldRelative
                     ? ChassisSpeeds.fromFieldRelativeSpeeds(
-                        -xSpeed, ySpeed, rot, m_gyro.getRotation2d())
+                        -xSpeed, ySpeed, rot, new Rotation2d(m_gyro.getAngle()*Math.PI/180))
                     : new ChassisSpeeds(-xSpeed, ySpeed, rot),
                 DriveConstants.kDrivePeriod));
     SwerveDriveKinematics.desaturateWheelSpeeds(
@@ -153,10 +161,8 @@ public class DriveSubsystem extends SubsystemBase {
   //   SmartDashboard.putNumber("BackRightAng", swerveModuleStates[3].angle.getRadians());
   //   SmartDashboard.putNumber("rot", rot);
 
-    SmartDashboard.putNumber("FLDriveEncoderDistance", m_frontLeft.getPosition().distanceMeters);
-    SmartDashboard.putNumber("FRDriveEncoderDistance", m_frontRight.getPosition().distanceMeters);
-    SmartDashboard.putNumber("RLDriveEncoderDistance", m_rearLeft.getPosition().distanceMeters);
-    SmartDashboard.putNumber("RRDriveEncoderDistance", m_rearRight.getPosition().distanceMeters);
+
+
 
 
    }
@@ -183,6 +189,12 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearRight.resetEncoders();
   }
 
+  public void resetDriveEncoders(){    
+    m_frontLeft.resetDriveEncoders();
+    m_rearLeft.resetDriveEncoders();
+    m_frontRight.resetDriveEncoders();
+    m_rearRight.resetDriveEncoders(); 
+  }
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
     m_gyro.reset();

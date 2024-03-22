@@ -180,5 +180,9 @@ public class SwerveModule {
     m_driveEncoder.setPosition(0);
     m_turningEncoder.setPosition(0);
   }
+
+  public void resetDriveEncoders(){
+    m_driveEncoder.setPosition(0);
+  }
 }
 

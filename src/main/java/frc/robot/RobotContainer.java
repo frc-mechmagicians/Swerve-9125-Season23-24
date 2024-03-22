@@ -142,7 +142,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return getAutonomousCommand3();
+    return getAutonomousCommand2();
   }
 
 
@@ -158,17 +158,15 @@ public class RobotContainer {
                 AutoConstants.kMaxSpeedMetersPerSecond,
                 AutoConstants.kMaxAccelerationMetersPerSecondSquared)
             // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(DriveConstants.kDriveKinematics);
+            .setKinematics(DriveConstants.kDriveKinematics).setReversed(true);
 
     // An example trajectory to follow. All units in meters.
     Trajectory exampleTrajectory =
         TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
-            new Pose2d(0, 0, new Rotation2d(0)),
             // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(4, 0), new Translation2d(4, 4)),
+            List.of(new Pose2d(0, 0, new Rotation2d(0)), new Pose2d(-2, 0, new Rotation2d(0))),
             // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(0, 0, new Rotation2d(0)),
             config);
     
 
@@ -198,6 +196,7 @@ public class RobotContainer {
         new InstantCommand(() -> m_robotDrive.drive(0, 0, 0, false)));
     
   }
+
 
   public Command getAutonomousCommand3() {
     // Create config for trajectory
@@ -286,8 +285,8 @@ public class RobotContainer {
           DriveConstants.kDriveKinematics,
 
           // Position controllers
-          new PIDController(AutoConstants.kPXController, 0, 0), 
-          new PIDController(AutoConstants.kPYController, 0, 0),
+          new PIDController(AutoConstants.kPXController*2, 0, 0), 
+          new PIDController(AutoConstants.kPYController*2, 0, 0),
           thetaController,
           m_robotDrive::setModuleStates,
           m_robotDrive);
@@ -357,6 +356,9 @@ public class RobotContainer {
             config);
         return exampleTrajectory;
   }
+
+
+
 
     public Trajectory auto3_2(TrajectoryConfig config){
         Trajectory exampleTrajectory =

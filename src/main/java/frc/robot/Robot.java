@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,6 +36,8 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
       m_robotContainer = new RobotContainer();
       m_robotContainer.m_arm.resetArmEncoder();
+    m_robotContainer.getDriveSubsystem().zeroHeading();
+
       //  m_robotContainer.getDriveSubsystem().resetEncoders();
 
       // m_robotContainer.getDriveSubsystem().resetEncoders();
@@ -66,8 +70,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    // m_robotContainer.getDriveSubsystem().resetEncoders();
-    m_robotContainer.getDriveSubsystem().zeroHeading();
+   // m_robotContainer.getDriveSubsystem().resetDriveEncoders();
+    //m_robotContainer.getDriveSubsystem().resetOdometry(new Pose2d(0,0,new Rotation2d(0))); // our starting pos isn't really 0 with coords can we do this?
 
 
     /*

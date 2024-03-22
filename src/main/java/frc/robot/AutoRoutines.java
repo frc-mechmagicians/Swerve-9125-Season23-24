@@ -117,7 +117,7 @@ public class AutoRoutines {
     }
 
     public Pose2d notePose(double loc[], double xOffset, double yOffset, double angleInDegrees) {
-        return new Pose2d(-(loc[0]-m_robotX+xOffset), -(loc[1]-m_robotY+yOffset), new Rotation2d(Math.PI/180*angleInDegrees));
+        return new Pose2d((loc[1]-m_robotY+yOffset), (loc[0]-m_robotX+xOffset), new Rotation2d(Math.PI/180*angleInDegrees));
     }
 
     public SwerveControllerCommand setSwerveCommand(Trajectory traj){
@@ -149,13 +149,18 @@ public class AutoRoutines {
             // Add kinematics to ensure max speed is actually obeyed
             .setKinematics(DriveConstants.kDriveKinematics);
 
+    
         Trajectory trajectory =
         TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
-            List.of(
-              m_drive.getPose(),
-              notePose(loc, xOffset,yOffset,angleInDegrees),
-              notePose(loc, 0,0,angleInDegrees)),
+            List.of(m_drive.getPose(),
+            notePose(loc, 0, 0, angleInDegrees)),
+            // List.of(
+            //   m_drive.getPose(),
+            //   notePose(loc, xOffset,yOffset,angleInDegrees),
+            //   notePose(loc, 0,0,angleInDegrees)),
+
+            // notePose(loc, 0,0,angleInDegrees)
             config);
     
         return setSwerveCommand(trajectory);
@@ -172,8 +177,8 @@ public class AutoRoutines {
     return Commands.sequence(
         new InstantCommand(() -> m_drive.resetOdometry(m_drive.getPose())),
         autoPickNote2,
-        autoPickNote1,
-        autoPickNote3,
+        // autoPickNote1,
+        // autoPickNote3,
         new InstantCommand(() -> m_drive.drive(0, 0, 0, false)));
   
   }
