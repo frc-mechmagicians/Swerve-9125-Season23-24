@@ -34,6 +34,9 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
       m_robotContainer = new RobotContainer();
       m_robotContainer.m_arm.resetArmEncoder();
+      //  m_robotContainer.getDriveSubsystem().resetEncoders();
+
+      // m_robotContainer.getDriveSubsystem().resetEncoders();
   }
 
   /**
@@ -63,7 +66,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    m_robotContainer.getDriveSubsystem().resetEncoders();
+    // m_robotContainer.getDriveSubsystem().resetEncoders();
     m_robotContainer.getDriveSubsystem().zeroHeading();
 
 
@@ -91,7 +94,7 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    m_robotContainer.getDriveSubsystem().resetEncoders();
+// m_robotContainer.getDriveSubsystem().resetEncoders();
     m_robotContainer.getDriveSubsystem().zeroHeading();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();

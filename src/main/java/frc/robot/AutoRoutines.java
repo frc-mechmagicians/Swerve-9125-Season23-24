@@ -1,12 +1,24 @@
 package frc.robot;
 
+import java.util.List;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.ArmSubsystem;
@@ -19,6 +31,8 @@ public class AutoRoutines {
     private ArmSubsystem m_arm;
     private IntakeSubsystem m_intake; 
     private ShooterSubsystem m_shooter;
+    public  double m_robotY = 0.9176+0.25;
+    public  double m_robotX = 2.6578;
 
     public AutoRoutines(DriveSubsystem drive, ArmSubsystem arm, IntakeSubsystem intake, ShooterSubsystem shooter)
     {
@@ -101,6 +115,69 @@ public class AutoRoutines {
             m_intake.runIntakeCommand(IntakeConstants.kIntakeVoltage).withTimeout(0.5)// Shoot
         );
     }
+
+    public Pose2d notePose(double loc[], double xOffset, double yOffset, double angleInDegrees) {
+        return new Pose2d(-(loc[0]-m_robotX+xOffset), -(loc[1]-m_robotY+yOffset), new Rotation2d(Math.PI/180*angleInDegrees));
+    }
+
+    public SwerveControllerCommand setSwerveCommand(Trajectory traj){
+    
+        var thetaController =  new ProfiledPIDController(
+            AutoConstants.kPThetaController*0.2, 0, 0, AutoConstants.kThetaControllerConstraints);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);  
+        SwerveControllerCommand autoTraj = new SwerveControllerCommand(
+            traj,
+            m_drive::getPose, // Functional interface to feed supplier
+            DriveConstants.kDriveKinematics,
+
+            // Position controllers
+            new PIDController(AutoConstants.kPXController, 0, 0), 
+            new PIDController(AutoConstants.kPYController, 0, 0),
+            thetaController,
+            m_drive::setModuleStates,
+            m_drive);
+      return autoTraj;
+    }
+
+    public SwerveControllerCommand newSwerveControllerCommand(double loc[], double xOffset, double yOffset, double angleInDegrees){
+
+         // Create config for trajectory
+        TrajectoryConfig config =
+            new TrajectoryConfig(
+                AutoConstants.kMaxSpeedMetersPerSecond - 2,
+                AutoConstants.kMaxAccelerationMetersPerSecondSquared-2)
+            // Add kinematics to ensure max speed is actually obeyed
+            .setKinematics(DriveConstants.kDriveKinematics);
+
+        Trajectory trajectory =
+        TrajectoryGenerator.generateTrajectory(
+            // Start at the origin facing the +X direction
+            List.of(
+              m_drive.getPose(),
+              notePose(loc, xOffset,yOffset,angleInDegrees),
+              notePose(loc, 0,0,angleInDegrees)),
+            config);
+    
+        return setSwerveCommand(trajectory);
+  }
+  public Command getAutonomousSubwoofer213() {
+ 
+    
+    SwerveControllerCommand autoPickNote2 = newSwerveControllerCommand(Constants.note2Location, 0, -0.5, 0);
+    SwerveControllerCommand autoPickNote1 = newSwerveControllerCommand(Constants.note1Location, 0.5, -0.5, 45);
+    SwerveControllerCommand autoPickNote3 = newSwerveControllerCommand(Constants.note3Location, -0.5, -0.5, -45);
+    
+
+
+    return Commands.sequence(
+        new InstantCommand(() -> m_drive.resetOdometry(m_drive.getPose())),
+        autoPickNote2,
+        autoPickNote1,
+        autoPickNote3,
+        new InstantCommand(() -> m_drive.drive(0, 0, 0, false)));
+  
+  }
+
 
 
 }
