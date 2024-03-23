@@ -71,7 +71,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
    // m_robotContainer.getDriveSubsystem().resetDriveEncoders();
-    //m_robotContainer.getDriveSubsystem().resetOdometry(new Pose2d(0,0,new Rotation2d(0))); // our starting pos isn't really 0 with coords can we do this?
+    // m_robotContainer.getDriveSubsystem().resetOdometry(new Pose2d(0,0,new Rotation2d(0))); // our starting pos isn't really 0 with coords can we do this?
 
 
     /*

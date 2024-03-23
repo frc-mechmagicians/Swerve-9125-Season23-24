@@ -7,19 +7,16 @@ package frc.robot.subsystems;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 
-import javax.swing.text.StyleContext.SmallAttributeSet;
-
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkFlex;
+import com.revrobotics.Rev2mDistanceSensor;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import com.revrobotics.*;
+import edu.wpi.first.wpilibj.AnalogInput;
 import com.revrobotics.Rev2mDistanceSensor.Port;
 import com.revrobotics.Rev2mDistanceSensor.RangeProfile;
 
@@ -29,6 +26,7 @@ import com.revrobotics.Rev2mDistanceSensor.RangeProfile;
 public class IntakeSubsystem extends SubsystemBase {
   private CANSparkFlex m_intakeMotor;
   private Rev2mDistanceSensor distOnboard; 
+  private final AnalogInput ultrasonic = new AnalogInput(IntakeConstants.kUltrasonicSensorPort);
 
   /** Creates a new Intake. */
   public IntakeSubsystem() {
@@ -38,9 +36,9 @@ public class IntakeSubsystem extends SubsystemBase {
     m_intakeMotor.restoreFactoryDefaults();
     m_intakeMotor.setSmartCurrentLimit(40);
     m_intakeMotor.setIdleMode(IdleMode.kBrake);
-    distOnboard.setAutomaticMode(true);
-    distOnboard.setEnabled(true);
-    distOnboard.setRangeProfile(RangeProfile.kHighSpeed);
+    // distOnboard.setAutomaticMode(true);
+    // distOnboard.setEnabled(true);
+    // distOnboard.setRangeProfile(RangeProfile.kHighSpeed);
     
 
     SmartDashboard.putData("pickNote", pickNoteCommand(IntakeConstants.kIntakeVoltage));
@@ -53,9 +51,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
     distOnboard.setAutomaticMode(true);
     distOnboard.setEnabled(true);
-    SmartDashboard.putNumber("2mDistSensorDistance", distOnboard.getRange());
-    SmartDashboard.putBoolean("SensorIsRangeVal", distOnboard.isRangeValid());
-    SmartDashboard.putBoolean("SensorIsEnabled", distOnboard.isEnabled());
+    SmartDashboard.putNumber("SensorDistance", getRange());
+    SmartDashboard.putBoolean("hasNote", hasNote());
     distOnboard.setEnabled(true);
   }
 
@@ -70,12 +67,16 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public double getRange() {
-    return distOnboard.getRange();
+    //return distOnboard.getRange();
+    return ultrasonic.getValue();
   }
 
   // hasNote
   public boolean hasNote(){ 
-    if (distOnboard.isRangeValid() && distOnboard.getRange() < 7){ 
+    // if (distOnboard.isRangeValid() && distOnboard.getRange() < 7){ 
+    //   return true;
+    // }
+    if (getRange() < 10) {
       return true;
     }
     return false;
@@ -85,6 +86,5 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command pickNoteCommand(double voltage) {
     return runIntakeCommand(voltage).until(this::hasNote);
     }
-
 }
  
