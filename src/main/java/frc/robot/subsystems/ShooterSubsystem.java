@@ -22,11 +22,11 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 public class ShooterSubsystem extends SubsystemBase {
 
     private CANSparkMax m_shooterMotor;
-    private CANSparkFlex m_shooterMotor2;
+    private CANSparkMax m_shooterMotor2;
 
     public ShooterSubsystem(){
         m_shooterMotor = new CANSparkMax(ShooterConstants.kLeftShooterMotorPort, MotorType.kBrushless);
-        m_shooterMotor2 = new CANSparkFlex(ShooterConstants.kRightShooterMotorPort, MotorType.kBrushless);
+        m_shooterMotor2 = new CANSparkMax(ShooterConstants.kRightShooterMotorPort, MotorType.kBrushless);
          
         m_shooterMotor.restoreFactoryDefaults();
         m_shooterMotor2.restoreFactoryDefaults();
@@ -43,8 +43,9 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void setSpeed(double speed) {
-        m_shooterMotor.set(speed*0.55/0.7);
-        m_shooterMotor2.set(speed);
+        m_shooterMotor.set(-speed*0.55/0.7);
+        m_shooterMotor2.set(-
+        speed);
     }
 
     public Command runShooterCommand(DoubleSupplier speed){

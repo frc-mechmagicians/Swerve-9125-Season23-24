@@ -39,5 +39,15 @@ public class Limelight {
         }
         return false;
     }
+    public double getTY(){
+        NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+        return table.getEntry("ty").getDouble(0);
+    }
+    public void periodic(){
+        NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+        SmartDashboard.putNumber("Ty", table.getEntry("ty").getDouble(0));
+        SmartDashboard.putNumber("LLAngle", readLimelightAngle());
+        SmartDashboard.putBoolean("Detected", isAprilTagDetected());
+    }
 }
 

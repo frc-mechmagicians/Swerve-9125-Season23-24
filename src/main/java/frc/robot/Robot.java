@@ -124,6 +124,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("GyroHeading1", m_robotContainer.getDriveSubsystem().m_gyro.getAngle());
     SmartDashboard.putBoolean("hasNote", m_robotContainer.getIntake().hasNote());
     SmartDashboard.putNumber("2mDist", m_robotContainer.getIntake().getRange());
+    SmartDashboard.putNumber("Ty", m_robotContainer.getLimelight().getTY());
+    SmartDashboard.putNumber("LLAngle", m_robotContainer.getLimelight().readLimelightAngle());
+    SmartDashboard.putBoolean("Detected", m_robotContainer.getLimelight().isAprilTagDetected());
   }
 
 

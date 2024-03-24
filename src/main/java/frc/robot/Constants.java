@@ -76,14 +76,27 @@ public final class Constants {
   }
 
   public static final class ShooterConstants {
-    public static final int kLeftShooterMotorPort = 16; //spark max
-    public static final int kRightShooterMotorPort = 15; // sparkflex
+    public static final int kLeftShooterMotorPort = 15; //spark max
+    public static final int kRightShooterMotorPort = 16; // sparkflex
          
     public static final double kShooterSpeedAmp = 0.2;
     public static final double kShooterSpeedSubwoofer = 0.6;
     public static final double kShooterSpeedPreload = 0.65;
     public static final double kShooterSpeedLongRange = 0.7;
     
+  }
+
+  
+
+  public static final class ClimberConstants {
+    public static final int kClimberLeftMotorId = 18; 
+    public static final int kClimberRightMotorId = 19; 
+    public static final double kClimberP = 0.001;
+    public static final double kClimberI = 0.0;
+    public static final double kClimberD = 0.0;
+    public static final double kClimberMinOutput = -0.5;
+    public static final double kClimberMaxOutput = 0.5;
+    public static final double kClimberGearRatio = 1.0 / 16.0;
   }
 
   public static final class DriveConstants {

@@ -121,7 +121,7 @@ public class ArmSubsystem extends SubsystemBase{
             setSpeed(m_armPID.calculate(this.armPosition()) +
              m_feedforward.calculate(Math.PI*this.armPosition()/180, 
                 Math.PI/180*m_armEncoder.getRate()*ArmConstants.kArmEncoderDistancePerPulse));
-        });
+        }).until(m_armPID::atSetpoint);  
     }
 
     public void resetArmEncoder(){

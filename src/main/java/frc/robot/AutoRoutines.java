@@ -1,5 +1,6 @@
 package frc.robot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -33,6 +34,8 @@ public class AutoRoutines {
     private ShooterSubsystem m_shooter;
     public  double m_robotY = 0.9176+0.25;
     public  double m_robotX = 2.6578;
+    public double angleForShooting = 30.168;
+
 
     public AutoRoutines(DriveSubsystem drive, ArmSubsystem arm, IntakeSubsystem intake, ShooterSubsystem shooter)
     {
@@ -159,17 +162,68 @@ public class AutoRoutines {
             config);
         return setSwerveCommand(trajectory);
   }
+
+
+    public SwerveControllerCommand newSwerveControllerCommand(double loc[], double xOffset[], double yOffset[], double angleInDegrees[]){
+
+         // Create config for trajectory
+        TrajectoryConfig config =
+            new TrajectoryConfig(
+                AutoConstants.kMaxSpeedMetersPerSecond - 2,
+                AutoConstants.kMaxAccelerationMetersPerSecondSquared-2)
+            // Add kinematics to ensure max speed is actually obeyed
+            .setKinematics(DriveConstants.kDriveKinematics).setReversed(true);
+        
+        List<Pose2d> notePoses = new ArrayList<Pose2d> ();
+        notePoses.add(m_drive.getPose());
+        for(int i = 0; i<xOffset.length; i++){
+            notePoses.add(notePose(loc, xOffset[i], yOffset[i], angleInDegrees[i]));
+        }
+        Trajectory trajectory =
+        TrajectoryGenerator.generateTrajectory(
+            // Start at the origin facing the +X direction
+            notePoses,
+            config);
+        return setSwerveCommand(trajectory);
+  }
+
+  public double[] offsetFinalLoc(double[] loc, double offsetX, double offsetY){
+    double[] finLoc = {-(loc[1]+offsetY), (loc[0]+offsetX)};
+    return finLoc;
+  }
+
+
   public Command getAutonomousSubwoofer213() {
   
-    SwerveControllerCommand autoPickNote2 = newSwerveControllerCommand(Constants.note2Location, 0, -0.5, 0);
-    SwerveControllerCommand autoPickNote1 = newSwerveControllerCommand(Constants.note1Location, 0.5, -0.5, 45);
-    SwerveControllerCommand autoPickNote3 = newSwerveControllerCommand(Constants.note3Location, -0.5, -0.5, -45);
+    SwerveControllerCommand autoPickNote2 = newSwerveControllerCommand(Constants.note2Location, 0, -1, 0);
+    SwerveControllerCommand autoShoot2 = newSwerveControllerCommand(offsetFinalLoc(Constants.note2Location, 0, -1), 0, 0, 0);
+    SwerveControllerCommand autoPickNote1 = newSwerveControllerCommand(Constants.note1Location, Math.tan(angleForShooting*Math.PI/180), -1, -angleForShooting);
+    SwerveControllerCommand autoShoot1 = newSwerveControllerCommand(offsetFinalLoc(Constants.note1Location, Math.tan(angleForShooting*Math.PI/180), -1), 0, 0, -angleForShooting);    
+    SwerveControllerCommand autoPickNote3 = newSwerveControllerCommand(Constants.note3Location, -Math.tan(angleForShooting*Math.PI/180), -1, angleForShooting);
+    SwerveControllerCommand autoShoot3 = newSwerveControllerCommand(offsetFinalLoc(Constants.note3Location, -Math.tan(angleForShooting*Math.PI/180), -1), 0, 0, angleForShooting);    
+
 
     return Commands.sequence(
         new InstantCommand(() -> m_drive.resetOdometry(new Pose2d(m_robotY,m_robotX,new Rotation2d(0)))),
         autoPickNote2,
+        //add paralell command around all the autoPickNote_s and include pick note to both of them
+        // new ParallelCommandGroup(
+        // add Run Shooter command,
+        // autoShoot2, 
+        // m_arm.trackLimelightCommand()
+        // ),
         // autoPickNote1,
+      // new ParallelCommandGroup(
+        // add Run Shooter command,
+        // autoShoot1, 
+        // m_arm.trackLimelightCommand()
+        // ),
         // autoPickNote3,
+      // new ParallelCommandGroup(
+        // add Run Shooter command,
+        // autoShoot3, 
+        // m_arm.trackLimelightCommand()
+        // ),
         new InstantCommand(() -> m_drive.drive(0, 0, 0, false)));
   
   }
@@ -177,8 +231,13 @@ public class AutoRoutines {
 
     public Command getAutonomousSubwooferFar() {
   
-    SwerveControllerCommand autoPickNote8 = newSwerveControllerCommand(Constants.note8Location, 0, -6, 0);
-    SwerveControllerCommand autoPickNote7 = newSwerveControllerCommand(Constants.note7Location, 1.5, -4, 45);
+    SwerveControllerCommand autoPickNote8 = newSwerveControllerCommand(Constants.note8Location, -6, 0, 0);
+    double xOffset7[] = {-5.0, -2.0, -1.5, 0.0};
+    double yOffset7[] = {-1.5, -1.5, 0.0,0.0};
+    double angleInDegrees7[] = {0.0,0.0,0.0,0.0};
+    SwerveControllerCommand autoPickNote7 = newSwerveControllerCommand(Constants.note7Location, 
+                        xOffset7, yOffset7, angleInDegrees7);
+
 
     return Commands.sequence(
         new InstantCommand(() -> m_drive.resetOdometry(new Pose2d(m_robotY,m_robotX,new Rotation2d(0)))),

@@ -36,9 +36,9 @@ public class IntakeSubsystem extends SubsystemBase {
     m_intakeMotor.restoreFactoryDefaults();
     m_intakeMotor.setSmartCurrentLimit(40);
     m_intakeMotor.setIdleMode(IdleMode.kBrake);
-    // distOnboard.setAutomaticMode(true);
-    // distOnboard.setEnabled(true);
-    // distOnboard.setRangeProfile(RangeProfile.kHighSpeed);
+    distOnboard.setAutomaticMode(true);
+    distOnboard.setEnabled(true);
+    distOnboard.setRangeProfile(RangeProfile.kHighSpeed);
     
 
     SmartDashboard.putData("pickNote", pickNoteCommand(IntakeConstants.kIntakeVoltage));
@@ -62,23 +62,25 @@ public class IntakeSubsystem extends SubsystemBase {
   }
   
   public Command runIntakeCommand(double voltage) {
-    return new StartEndCommand(()->this.m_intakeMotor.setVoltage(voltage), //rmr to chg to speed
+    return new StartEndCommand(()->this.m_intakeMotor.setVoltage(-voltage), //rmr to chg to speed
                         ()->this.m_intakeMotor.setVoltage(0), this);
   }
 
+  
   public double getRange() {
-    //return distOnboard.getRange();
-    return ultrasonic.getValue();
+    return distOnboard.getRange();
+    //return ultrasonic.getValue();
   }
 
   // hasNote
   public boolean hasNote(){ 
-    // if (distOnboard.isRangeValid() && distOnboard.getRange() < 7){ 
-    //   return true;
-    // }
-    if (getRange() < 10) {
+    if (distOnboard.isRangeValid() && distOnboard.getRange() < 7){ 
       return true;
     }
+    
+    // if (getRange() < 270) {
+    //   return true;
+    // }
     return false;
   }
 
