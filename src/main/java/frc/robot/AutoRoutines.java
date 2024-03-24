@@ -32,7 +32,7 @@ public class AutoRoutines {
     private ArmSubsystem m_arm;
     private IntakeSubsystem m_intake; 
     private ShooterSubsystem m_shooter;
-    public  double m_robotY = 0.9176+0.25;
+    public  double m_robotY = (0.9176+0.25);
     public  double m_robotX = 2.6578;
     public double angleForShooting = 30.168;
 
@@ -120,7 +120,7 @@ public class AutoRoutines {
     }
 
     public Pose2d notePose(double loc[], double xOffset, double yOffset, double angleInDegrees) {
-        return new Pose2d(-(loc[1]+yOffset), (loc[0]+xOffset), new Rotation2d(angleInDegrees*Math.PI/180));
+        return new Pose2d(-(loc[1]+yOffset-m_robotY), (loc[0]+xOffset-m_robotX), new Rotation2d(angleInDegrees*Math.PI/180));
     }
 
     public SwerveControllerCommand setSwerveCommand(Trajectory traj){
@@ -147,8 +147,8 @@ public class AutoRoutines {
          // Create config for trajectory
         TrajectoryConfig config =
             new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond - 2,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared-2)
+                AutoConstants.kMaxSpeedMetersPerSecond - 2.8,
+                AutoConstants.kMaxAccelerationMetersPerSecondSquared-2.8)
             // Add kinematics to ensure max speed is actually obeyed
             .setKinematics(DriveConstants.kDriveKinematics).setReversed(true);
     
@@ -157,8 +157,8 @@ public class AutoRoutines {
             // Start at the origin facing the +X direction
             List.of(
                 m_drive.getPose(),
-                notePose(loc, xOffset,yOffset,angleInDegrees),
-                notePose(loc, 0,0,angleInDegrees)),
+                notePose(loc, xOffset,yOffset,angleInDegrees)),
+               // notePose(loc, 0,0,angleInDegrees)),
             config);
         return setSwerveCommand(trajectory);
   }
@@ -195,17 +195,23 @@ public class AutoRoutines {
 
   public Command getAutonomousSubwoofer213() {
   
-    SwerveControllerCommand autoPickNote2 = newSwerveControllerCommand(Constants.note2Location, 0, -1, 0);
-    SwerveControllerCommand autoShoot2 = newSwerveControllerCommand(offsetFinalLoc(Constants.note2Location, 0, -1), 0, 0, 0);
-    SwerveControllerCommand autoPickNote1 = newSwerveControllerCommand(Constants.note1Location, Math.tan(angleForShooting*Math.PI/180), -1, -angleForShooting);
-    SwerveControllerCommand autoShoot1 = newSwerveControllerCommand(offsetFinalLoc(Constants.note1Location, Math.tan(angleForShooting*Math.PI/180), -1), 0, 0, -angleForShooting);    
-    SwerveControllerCommand autoPickNote3 = newSwerveControllerCommand(Constants.note3Location, -Math.tan(angleForShooting*Math.PI/180), -1, angleForShooting);
-    SwerveControllerCommand autoShoot3 = newSwerveControllerCommand(offsetFinalLoc(Constants.note3Location, -Math.tan(angleForShooting*Math.PI/180), -1), 0, 0, angleForShooting);    
+    double loc[] = {0, 2.5};
+    SwerveControllerCommand autoPickNote2 = newSwerveControllerCommand(Constants.note2Location, 0, 0, 0);
+    SwerveControllerCommand autoPickNote1 = newSwerveControllerCommand(Constants.note1Location, 0, 0, 0);
+    SwerveControllerCommand autoPickNote3 = newSwerveControllerCommand(Constants.note3Location, 0, 0, 0);
+    // SwerveControllerCommand autoShoot2 = newSwerveControllerCommand(offsetFinalLoc(Constants.note2Location, 0, -1), 0, 0, 0);
+    // SwerveControllerCommand autoPickNote1 = newSwerveControllerCommand(Constants.note1Location, Math.tan(angleForShooting*Math.PI/180), -1, -angleForShooting);
+    // SwerveControllerCommand autoShoot1 = newSwerveControllerCommand(offsetFinalLoc(Constants.note1Location, Math.tan(angleForShooting*Math.PI/180), -1), 0, 0, -angleForShooting);    
+    // SwerveControllerCommand autoPickNote3 = newSwerveControllerCommand(Constants.note3Location, -Math.tan(angleForShooting*Math.PI/180), -1, angleForShooting);
+    // SwerveControllerCommand autoShoot3 = newSwerveControllerCommand(offsetFinalLoc(Constants.note3Location, -Math.tan(angleForShooting*Math.PI/180), -1), 0, 0, angleForShooting);    
 
 
     return Commands.sequence(
-        new InstantCommand(() -> m_drive.resetOdometry(new Pose2d(m_robotY,m_robotX,new Rotation2d(0)))),
+    
+        new InstantCommand(() -> m_drive.resetOdometry(new Pose2d(0,0,new Rotation2d(0)))),
         autoPickNote2,
+        autoPickNote1,
+        autoPickNote3,
         //add paralell command around all the autoPickNote_s and include pick note to both of them
         // new ParallelCommandGroup(
         // add Run Shooter command,

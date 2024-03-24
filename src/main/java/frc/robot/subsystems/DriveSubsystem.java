@@ -74,7 +74,9 @@ public class DriveSubsystem extends SubsystemBase {
 
 
   /** Creates a new DriveSubsystem. */
-  public DriveSubsystem() {}
+  public DriveSubsystem() {
+    SmartDashboard.putData("Reset Encoders", run(()->this.resetEncoders()));
+  }
 
   @Override
   public void periodic() {

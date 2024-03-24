@@ -87,10 +87,10 @@ public class SwerveModule {
     m_drivePIDController = m_driveMotor.getPIDController();
 
     m_driveMotor.setInverted(driveEncoderReversed);
-    m_drivePIDController.setP(0.0075);
+    m_drivePIDController.setP(0.01);
     m_drivePIDController.setI(0);
     m_drivePIDController.setD(0);
-    m_drivePIDController.setFF(0.9);
+    m_drivePIDController.setFF(0.3);
     m_drivePIDController.setOutputRange(-1, 1);
     m_driveEncoder.setPositionConversionFactor(Constants.ModuleConstants.kDriveEncoderDistancePerPulse);
     m_driveEncoder.setVelocityConversionFactor(Constants.ModuleConstants.kDriveEncoderDistancePerPulse);

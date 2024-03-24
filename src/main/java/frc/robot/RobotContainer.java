@@ -127,7 +127,7 @@ public class RobotContainer {
         if (m_intake.hasNote()) m_arm.setPos(ArmConstants.kArmAngleSubwoofer);
       })));
 
-    xboxButtonPick.onFalse(m_intake.runIntakeCommand(-1).unless(m_intake::hasNote).withTimeout(0.15));
+    xboxButtonPick.onFalse(m_intake.runIntakeCommand(-IntakeConstants.kIntakeVoltage).unless(m_intake::hasNote).withTimeout(0.15));
 
     final JoystickButton PS4GyroReset = new JoystickButton(m_driverController, PS4Controller.Button.kCross.value);
     PS4GyroReset.onTrue(new InstantCommand(()->m_robotDrive.zeroHeading()));
@@ -146,7 +146,7 @@ public class RobotContainer {
     return m_Limelight;
   }
   public Command getAutonomousCommand() {
-    return getAutonomousCommand2();
+    return m_auto.getAutonomousSubwoofer213();
   }
 
 
