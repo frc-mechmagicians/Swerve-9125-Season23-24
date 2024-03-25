@@ -25,6 +25,7 @@ public final class Constants {
   public static final int intakeMotorSmartLimit = 25;
 
   //Note Locations
+  public static final double[] subwooferLocation = {2.6578, 0.9176+0.25};
   public static final double[] note1Location = {1.21,2.887};
   public static final double[] note2Location = {2.6578,2.887};
   public static final double[] note3Location = {4.1056,2.887};

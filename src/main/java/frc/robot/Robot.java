@@ -14,6 +14,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.SwerveModule;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import edu.wpi.first.cameraserver.CameraServer;
 
 
 /**
@@ -37,6 +38,7 @@ public class Robot extends TimedRobot {
       m_robotContainer = new RobotContainer();
       m_robotContainer.m_arm.resetArmEncoder();
     m_robotContainer.getDriveSubsystem().zeroHeading();
+    CameraServer.startAutomaticCapture();
 
       //  m_robotContainer.getDriveSubsystem().resetEncoders();
 
@@ -124,9 +126,6 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("GyroHeading1", m_robotContainer.getDriveSubsystem().m_gyro.getAngle());
     SmartDashboard.putBoolean("hasNote", m_robotContainer.getIntake().hasNote());
     SmartDashboard.putNumber("2mDist", m_robotContainer.getIntake().getRange());
-    SmartDashboard.putNumber("Ty", m_robotContainer.getLimelight().getTY());
-    SmartDashboard.putNumber("LLAngle", m_robotContainer.getLimelight().readLimelightAngle());
-    SmartDashboard.putBoolean("Detected", m_robotContainer.getLimelight().isAprilTagDetected());
   }
 
 

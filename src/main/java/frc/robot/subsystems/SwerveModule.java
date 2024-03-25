@@ -90,7 +90,7 @@ public class SwerveModule {
     m_drivePIDController.setP(0.01);
     m_drivePIDController.setI(0);
     m_drivePIDController.setD(0);
-    m_drivePIDController.setFF(0.3);
+    m_drivePIDController.setFF(0.4);
     m_drivePIDController.setOutputRange(-1, 1);
     m_driveEncoder.setPositionConversionFactor(Constants.ModuleConstants.kDriveEncoderDistancePerPulse);
     m_driveEncoder.setVelocityConversionFactor(Constants.ModuleConstants.kDriveEncoderDistancePerPulse);
@@ -170,6 +170,7 @@ public class SwerveModule {
     m_turningMotor.setVoltage(turnOutput);
    // m_turningMotor.set(0);  
     //m_driveMotor.set(0.1);
+    m_drivePIDController.setFF(Math.abs(state.speedMetersPerSecond*0.1));
     m_drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
     //m_turningPIDController.setReference(state.angle.getRadians(), ControlType.kPosition);
   }

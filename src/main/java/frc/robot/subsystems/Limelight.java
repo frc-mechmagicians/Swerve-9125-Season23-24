@@ -1,17 +1,23 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Limelight {
-    public static final double limelightLensHeightInches = 20.0;
-    public static final double limelightMountAngleDegrees = 25.0; 
-    public static final double goalHeightInches = 60.0;
-    public static final double distancefrompivottoLimeLight = 10; 
-    public static final double DistanceFromPivotToSpeakerOpening = 68;
+    public static final double limelightLensHeightInches = 6.95;
+    public static final double limelightMountAngleDegrees = 20.0; 
+    public static final double aprilTagHeightInches = 53.88;
+    public static final double distancefrompivottoLimeLight = 0; 
+    public static final double pivotHeight = 11;
+    public static final double speakerHight = 80;
+    public static final double DistanceFromPivotToSpeakerOpening = speakerHight-pivotHeight;
     public static final double ArmLength = 23.25;
+    public static final double shootAngleinDegrees = 33;
 
 
     private static double armAngleRadians(double d, double h, double AL) {
@@ -20,34 +26,38 @@ public class Limelight {
         // double b = Math.sqrt(Math.pow(c, 2) - Math.pow(AL, 2));
         double z = Math.toDegrees(Math.acos(AL / c));
         double y = Math.toDegrees(Math.atan(h / d));
-        double armDegreeMovement = 180 - (z + y);
+        double armDegreeMovement = 180 - shootAngleinDegrees - (z + y);
         return armDegreeMovement * Math.PI/180.0;
     }
     public static double readLimelightAngle(){
+        
         NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
         NetworkTableEntry ty = table.getEntry("ty");
         double targetOffsetAngle_Vertical = ty.getDouble(0.0);
         double angleToGoalDegrees =limelightMountAngleDegrees + targetOffsetAngle_Vertical;
         double angleToGoalRadians = angleToGoalDegrees * (Math.PI / 180.0);
-        double distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches) / Math.tan(angleToGoalRadians);
-        return armAngleRadians(distanceFromLimelightToGoalInches + distancefrompivottoLimeLight , DistanceFromPivotToSpeakerOpening, ArmLength);
+        double distanceFromLimelightToGoalInches = (aprilTagHeightInches - limelightLensHeightInches) / Math.tan(angleToGoalRadians);
+        double armAngle = armAngleRadians(distanceFromLimelightToGoalInches + distancefrompivottoLimeLight , 
+            DistanceFromPivotToSpeakerOpening, ArmLength);
+        SmartDashboard.putNumber("Ty", table.getEntry("ty").getDouble(0));
+        SmartDashboard.putBoolean("Detected", isAprilTagDetected());
+        SmartDashboard.putBoolean("CheckDetected", table.getEntry("tv").getBoolean(false));
+        SmartDashboard.putNumber("DistFromGoal", distanceFromLimelightToGoalInches);
+        SmartDashboard.putNumber("limelightAngle", armAngle*(180/Math.PI));
+        
+        return armAngle;
+    
     }
     public static boolean isAprilTagDetected(){
         NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-        if (table !=null) {
-            return table.getEntry("tv").getBoolean(false);
+        if (table.getEntry("tid").getDouble(-1) !=-1) {
+            return true;
+            // return table.getEntry("tv").getBoolean(false);
         }
         return false;
     }
-    public double getTY(){
-        NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-        return table.getEntry("ty").getDouble(0);
-    }
-    public void periodic(){
-        NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-        SmartDashboard.putNumber("Ty", table.getEntry("ty").getDouble(0));
-        SmartDashboard.putNumber("LLAngle", readLimelightAngle());
-        SmartDashboard.putBoolean("Detected", isAprilTagDetected());
-    }
+
+    
+    
 }
 

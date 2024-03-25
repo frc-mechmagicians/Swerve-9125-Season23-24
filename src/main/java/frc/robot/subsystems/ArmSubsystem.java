@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 
+import org.opencv.core.Mat;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -12,6 +14,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj.Encoder;
 
@@ -45,9 +48,11 @@ public class ArmSubsystem extends SubsystemBase{
 
         // Add to smart dashboard
         SmartDashboard.putNumber("ArmAngle", 0);
+        SmartDashboard.putData("setPos", this.goToArmAngle(10));
         SmartDashboard.putData("rotateArm", this.rotateArmCommand(SmartDashboard.getNumber("ArmAngle", 10)));
         SmartDashboard.putData("trackLimelight", this.trackLimelightCommand());
         SmartDashboard.putData("ResetArm", resetCommand());
+        SmartDashboard.putData("goToArmAngle", goToArmAngle(40));
         
 
     }
@@ -57,6 +62,9 @@ public class ArmSubsystem extends SubsystemBase{
     public void periodic(){
         SmartDashboard.putNumber("ArmPosition", armPosition());
         SmartDashboard.putNumber("setpoint", m_armPID.getSetpoint());
+        SmartDashboard.putNumber("angleToShoot", Limelight.readLimelightAngle()*180/Math.PI);
+        SmartDashboard.putBoolean("IsAprilTagDetected", Limelight.isAprilTagDetected());
+
     }
 
     public void setSpeed(double speed) {
@@ -100,6 +108,10 @@ public class ArmSubsystem extends SubsystemBase{
         m_armPID.setSetpoint(angle);
     }
 
+    public Command goToArmAngle(double angle){
+        return new InstantCommand(()->setPos(angle));
+    }
+
     public Command rotateArmCommand(double angle) {
         return run(()->{   
             m_armPID.setSetpoint(angle); 
@@ -115,13 +127,13 @@ public class ArmSubsystem extends SubsystemBase{
                 Math.PI/180*m_armEncoder.getRate()*ArmConstants.kArmEncoderDistancePerPulse));        
             
             if (Limelight.isAprilTagDetected()) {
-                m_armPID.setSetpoint(Limelight.readLimelightAngle());
+               m_armPID.setSetpoint(Limelight.readLimelightAngle()*180/Math.PI);
             }
-            //setSpeed(m_armPID.calculate(this.armPosition()));
+
             setSpeed(m_armPID.calculate(this.armPosition()) +
              m_feedforward.calculate(Math.PI*this.armPosition()/180, 
                 Math.PI/180*m_armEncoder.getRate()*ArmConstants.kArmEncoderDistancePerPulse));
-        }).until(m_armPID::atSetpoint);  
+         }).until(m_armPID::atSetpoint);  
     }
 
     public void resetArmEncoder(){

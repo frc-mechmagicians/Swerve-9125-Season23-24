@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
