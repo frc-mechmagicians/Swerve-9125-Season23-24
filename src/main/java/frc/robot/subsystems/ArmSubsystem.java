@@ -48,12 +48,9 @@ public class ArmSubsystem extends SubsystemBase{
 
         // Add to smart dashboard
         SmartDashboard.putNumber("ArmAngle", 0);
-        SmartDashboard.putData("setPos", this.goToArmAngle(10));
         SmartDashboard.putData("rotateArm", this.rotateArmCommand(SmartDashboard.getNumber("ArmAngle", 10)));
         SmartDashboard.putData("trackLimelight", this.trackLimelightCommand());
-        SmartDashboard.putData("ResetArm", resetCommand());
-        SmartDashboard.putData("goToArmAngle", goToArmAngle(40));
-        
+        SmartDashboard.putData("ResetArm", resetCommand());        
 
     }
 
@@ -65,6 +62,10 @@ public class ArmSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("angleToShoot", Limelight.readLimelightAngle()*180/Math.PI);
         SmartDashboard.putBoolean("IsAprilTagDetected", Limelight.isAprilTagDetected());
 
+    }
+
+    public void setArmOffset(double offset) {
+        m_armOffset = offset;
     }
 
     public void setSpeed(double speed) {
@@ -81,7 +82,7 @@ public class ArmSubsystem extends SubsystemBase{
 
 
     public double armPosition() {
-        return m_armEncoder.getDistance();
+        return m_armEncoder.getDistance()-m_armOffset;
     }
 
     public Command resetCommand() {
@@ -106,10 +107,6 @@ public class ArmSubsystem extends SubsystemBase{
 
     public void setPos(double angle) {
         m_armPID.setSetpoint(angle);
-    }
-
-    public Command goToArmAngle(double angle){
-        return new InstantCommand(()->setPos(angle));
     }
 
     public Command rotateArmCommand(double angle) {

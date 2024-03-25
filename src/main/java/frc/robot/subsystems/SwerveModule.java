@@ -170,7 +170,7 @@ public class SwerveModule {
     m_turningMotor.setVoltage(turnOutput);
    // m_turningMotor.set(0);  
     //m_driveMotor.set(0.1);
-    m_drivePIDController.setFF(Math.abs(state.speedMetersPerSecond*0.1));
+   // m_drivePIDController.setFF(Math.abs(state.speedMetersPerSecond*0.1));
     m_drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
     //m_turningPIDController.setReference(state.angle.getRadians(), ControlType.kPosition);
   }

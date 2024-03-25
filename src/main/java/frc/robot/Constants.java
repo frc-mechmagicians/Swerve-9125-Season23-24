@@ -67,13 +67,13 @@ public final class Constants {
      * iter limit 10000
      */
 
-     public static final double kArmAnglePickNote = 0;
-     public static final double kArmAngleAmp = 90;
+     public static final double kArmAnglePickNote = 2.5;
+     public static final double kArmAngleAmp = 85;
      public static final double kArmAngleSubwoofer = 20.5;
      public static final double kArmAnglePreload = 21;
      public static final double kArmAngleLongRange = 32;
      
-
+     public static final double kArmOffset = -73;
   }
 
   public static final class ShooterConstants {
