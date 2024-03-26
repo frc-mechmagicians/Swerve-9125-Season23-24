@@ -47,12 +47,12 @@ public final class Constants {
     public static final int kLeftPivotMotorPort = 9;
     public static final int kRightPivotMotorPort = 10;
     public static final double kArmEncoderDistancePerPulse = 360.0/2048.0; // 90.0/2400; //degrees
-    public static final double kP = 0.27; //0.35
+    public static final double kP = 0.35; //0.35
     public static final double kI = 0;//0
     public static final double kD = 0.0;
     public static final double ks = 0;
     public static final double kg = 0.4; //.5
-    public static final double kv = 4.68;//0.08
+    public static final double kv = 4; // 4.68;//0.08
     public static final double ka = 0.03;
     public static final double kFeedforwardVelocity = 0.1;
     /* Reca.lc
@@ -67,13 +67,13 @@ public final class Constants {
      * iter limit 10000
      */
 
-     public static final double kArmAnglePickNote = 2.5;
+     public static final double kArmAnglePickNote = 0;
      public static final double kArmAngleAmp = 85;
      public static final double kArmAngleSubwoofer = 20.5;
      public static final double kArmAnglePreload = 21;
      public static final double kArmAngleLongRange = 32;
      
-     public static final double kArmOffset = -73;
+     public static final double kArmOffset = -90;
   }
 
   public static final class ShooterConstants {
@@ -81,7 +81,7 @@ public final class Constants {
     public static final int kRightShooterMotorPort = 16; // sparkflex
          
     public static final double kShooterSpeedAmp = 0.2;
-    public static final double kShooterSpeedSubwoofer = 0.6;
+    public static final double kShooterSpeedSubwoofer = 0.7;
     public static final double kShooterSpeedPreload = 0.65;
     public static final double kShooterSpeedLongRange = 0.7;
     
@@ -188,6 +188,7 @@ public final class Constants {
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
+    public static final double kAuotSpeed = 0.8;
     public static final double kPXController = 1;
     public static final double kPYController = 1;
     public static final double kPThetaController = 1;

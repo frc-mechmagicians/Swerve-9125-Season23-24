@@ -23,6 +23,7 @@ public class ArmSubsystem extends SubsystemBase{
     private CANSparkMax m_pivotMotor2;
     private Encoder m_armEncoder;
     private double m_armOffset = 0;
+    private boolean m_tracking = false;
 
     // use some constant in Constants.java
     PIDController m_armPID = new PIDController(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
@@ -36,8 +37,8 @@ public class ArmSubsystem extends SubsystemBase{
         m_pivotMotor2.restoreFactoryDefaults();
         //m_pivotMotor.setInverted(true);
 
-        m_pivotMotor.setIdleMode(IdleMode.kBrake);
-        m_pivotMotor2.setIdleMode(IdleMode.kBrake);
+        m_pivotMotor.setIdleMode(IdleMode.kCoast);
+        m_pivotMotor2.setIdleMode(IdleMode.kCoast);
         m_pivotMotor.setSmartCurrentLimit(30); //Make a max current limit
         m_pivotMotor2.setSmartCurrentLimit(30); //Make a max current limit
         
@@ -61,11 +62,12 @@ public class ArmSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("setpoint", m_armPID.getSetpoint());
         SmartDashboard.putNumber("angleToShoot", Limelight.readLimelightAngle()*180/Math.PI);
         SmartDashboard.putBoolean("IsAprilTagDetected", Limelight.isAprilTagDetected());
-
+        SmartDashboard.putBoolean("trackingEnabled", m_tracking);
     }
 
     public void setArmOffset(double offset) {
         m_armOffset = offset;
+        resetArmEncoder();
     }
 
     public void setSpeed(double speed) {
@@ -109,13 +111,21 @@ public class ArmSubsystem extends SubsystemBase{
         m_armPID.setSetpoint(angle);
     }
 
+    public void enableTracking(boolean track) {
+        this.m_tracking=track;
+    }
+
+    public boolean atSetpoint() {
+       return m_armPID.atSetpoint();
+    }
+    
     public Command rotateArmCommand(double angle) {
         return run(()->{   
             m_armPID.setSetpoint(angle); 
             this.setSpeed(m_armPID.calculate(this.armPosition()) +
                 m_feedforward.calculate(Math.PI*this.armPosition()/180, 
                 Math.PI/180*m_armEncoder.getRate()*ArmConstants.kArmEncoderDistancePerPulse));
-         }).until(m_armPID::atSetpoint);
+         });
     }
 
     public Command trackLimelightCommand() {
@@ -123,7 +133,7 @@ public class ArmSubsystem extends SubsystemBase{
             SmartDashboard.putNumber("voltage", m_feedforward.calculate(Math.PI*this.armPosition()/180, 
                 Math.PI/180*m_armEncoder.getRate()*ArmConstants.kArmEncoderDistancePerPulse));        
             
-            if (Limelight.isAprilTagDetected()) {
+            if (m_tracking && Limelight.isAprilTagDetected()) {
                m_armPID.setSetpoint(Limelight.readLimelightAngle()*180/Math.PI);
             }
 

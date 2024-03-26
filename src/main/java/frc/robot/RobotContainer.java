@@ -108,8 +108,10 @@ public class RobotContainer {
        m_shooter.runShooterCommand(()->ShooterConstants.kShooterSpeedPreload)));
     //shooter3 - 13 feet
     final JoystickButton xboxButtonSp3 = new JoystickButton(m_operatoController, XboxController.Button.kX.value);        
-    xboxButtonSp3.whileTrue(new ParallelCommandGroup(new InstantCommand(()->m_arm.setPos(ArmConstants.kArmAngleLongRange)), 
-      m_shooter.runShooterCommand(()->ShooterConstants.kShooterSpeedLongRange)));
+    xboxButtonSp3.whileTrue(m_shooter.runShooterCommand(()->ShooterConstants.kShooterSpeedLongRange));
+    xboxButtonSp3.onTrue(new InstantCommand(()->m_arm.enableTracking(true)));
+    xboxButtonSp3.onFalse(new InstantCommand(()->m_arm.enableTracking(false)));
+
     //Amp
      final JoystickButton xboxButtonAmp = new JoystickButton(m_operatoController, XboxController.Button.kY.value);        
     xboxButtonAmp.whileTrue(new ParallelCommandGroup(new InstantCommand(()->m_arm.setPos(ArmConstants.kArmAngleAmp)), 
@@ -147,7 +149,7 @@ public class RobotContainer {
     return m_Limelight;
   }
   public Command getAutonomousCommand() {
-    return m_auto.getAutonomousSubwoofer213();
+    return m_auto.AutoRoutineFourPiece();
   }
 
 
