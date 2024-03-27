@@ -50,7 +50,9 @@ public class AutoRoutines {
     }
 
     public Command autoInit(double shooterSpeed, double armAngle){
+
         return Commands.sequence(
+            new InstantCommand(()-> m_drive.resetOdometry(new Pose2d(0,0,new Rotation2d(0)))),
             new InstantCommand(()->m_arm.setArmOffset(Constants.ArmConstants.kArmOffset)),
             m_shooter.runOnce(()->m_shooter.setSpeed(shooterSpeed)), // Start shooter moter
             m_arm.rotateArmCommand(armAngle)).withTimeout(1);
@@ -98,20 +100,20 @@ public class AutoRoutines {
             Commands.parallel(
                 m_drive.run(()->m_drive.drive(0, AutoConstants.kAuotSpeed, 0, false)),
                 m_arm.rotateArmCommand(ArmConstants.kArmAnglePickNote)
-            ).withTimeout(2.3),
+            ).until(()->Math.abs(m_drive.getPose().getY())>=1.48),//.withTimeout(2.3),
 
             // Drive back until note is picked
             Commands.deadline(
-                m_intake.pickNoteCommand(IntakeConstants.kIntakeVoltage), // pick note
+                m_intake.pickNoteCommand(IntakeConstants.kIntakeVoltage*0.8), // pick note
                 m_drive.run(()->m_drive.drive(AutoConstants.kAuotSpeed, 0, 0, false)), // drive back
                 m_arm.rotateArmCommand(ArmConstants.kArmAnglePickNote) // Rotate arm
-            ).withTimeout(2),
+            ).withTimeout(1.5),
 
             // Rotate arm to shooting posiiton while moving forard
             Commands.parallel(
                 m_arm.rotateArmCommand(ArmConstants.kArmAngleSubwoofer+1), // Rotate arm
                 m_drive.run(()->m_drive.drive(-AutoConstants.kAuotSpeed*.5,-AutoConstants.kAuotSpeed, 0, false)) // drive forward
-            ).withTimeout(2),
+            ).until(()->Math.abs(m_drive.getPose().getY())<=0.1),//withTimeout(2),
             m_drive.runOnce(()->m_drive.drive(0, 0, 0, false)),
             m_intake.runIntakeCommand(IntakeConstants.kIntakeVoltage).withTimeout(0.5),// Shoot
             m_shooter.runOnce(()->m_shooter.setSpeed(0)) 
@@ -126,20 +128,20 @@ public class AutoRoutines {
             Commands.parallel(
                 m_drive.run(()->m_drive.drive(0, -AutoConstants.kAuotSpeed, 0, false)),
                 m_arm.rotateArmCommand(ArmConstants.kArmAnglePickNote)
-            ).withTimeout(2.3),
+            ).until(()->Math.abs(m_drive.getPose().getY())>=1.48),//.withTimeout(2.3),
 
             // Drive back until note is picked
             Commands.deadline(
-                m_intake.pickNoteCommand(IntakeConstants.kIntakeVoltage), // pick note
+                m_intake.pickNoteCommand(IntakeConstants.kIntakeVoltage*0.8), // pick note
                 m_drive.run(()->m_drive.drive(AutoConstants.kAuotSpeed, 0, 0, false)), // drive back
                 m_arm.rotateArmCommand(ArmConstants.kArmAnglePickNote) // Rotate arm
-            ).withTimeout(2),
+            ).withTimeout(1.5),
 
             // Rotate arm to shooting posiiton while moving forard
             Commands.parallel(
                 m_arm.rotateArmCommand(ArmConstants.kArmAngleSubwoofer+1), // Rotate arm
                 m_drive.run(()->m_drive.drive(-AutoConstants.kAuotSpeed*0.5, AutoConstants.kAuotSpeed, 0, false)) // drive forward
-            ).withTimeout(2),
+            ).until(()->Math.abs(m_drive.getPose().getY())<=0.1),//.withTimeout(2),
             m_drive.runOnce(()->m_drive.drive(0, 0, 0, true)),
             m_intake.runIntakeCommand(IntakeConstants.kIntakeVoltage).withTimeout(0.5),// Shoot
             m_shooter.runOnce(()->m_shooter.setSpeed(0)) 
