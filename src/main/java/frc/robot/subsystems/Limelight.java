@@ -39,11 +39,7 @@ public class Limelight {
     }
 
     public static double solveAngleB(double a, double b, double c, double angleC) {
-<<<<<<< HEAD
-       return Math.asin(Math.sin(Math.toRadians(angleC)))*b/c;
-=======
        return Math.toDegrees(Math.asin(Math.sin(Math.toRadians(angleC)))*b/c);
->>>>>>> e83675c (Limelight angle)
     }
 
     private static double armAngleRadians(double d, double h, double AL) {
@@ -59,11 +55,7 @@ public class Limelight {
         // double b = Math.sqrt(Math.pow(c, 2) - Math.pow(AL, 2));
         double y = Math.toDegrees(Math.atan(h / d));
         double armDegreeMovement = 180 - (angleB + y);
-<<<<<<< HEAD
-        return armDegreeMovement * Math.PI/180.0;
-=======
         return Math.toRadians(armDegreeMovement);
->>>>>>> e83675c (Limelight angle)
     }
     public static double readLimelightAngle(){
         NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
