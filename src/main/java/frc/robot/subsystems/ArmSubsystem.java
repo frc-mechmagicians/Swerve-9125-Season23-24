@@ -134,7 +134,9 @@ public class ArmSubsystem extends SubsystemBase{
                 Math.PI/180*m_armEncoder.getRate()*ArmConstants.kArmEncoderDistancePerPulse));        
             
             if (m_tracking && Limelight.isAprilTagDetected()) {
-               m_armPID.setSetpoint(Limelight.readLimelightAngle()*180/Math.PI);
+                double angle = Limelight.readLimelightAngle()*180/Math.PI;
+                if (angle > 0)
+                    m_armPID.setSetpoint(angle);
             }
 
             setSpeed(m_armPID.calculate(this.armPosition()) +
