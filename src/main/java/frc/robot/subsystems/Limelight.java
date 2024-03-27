@@ -20,7 +20,7 @@ public class Limelight {
     public static final double shootAngleinDegrees = 90-33;
 
     public static double solveb(double a, double c, double angle) {
-        double coffB = 2 * a * Math.cos(Math.toRadians(angle));
+        double coffB = -2 * a * Math.cos(Math.toRadians(angle));
         double coffA = 1;
         double coffC = a*a - c*c;
         double discriminator = coffB*coffB - 4*coffA*coffC;

@@ -49,7 +49,7 @@ public class SwerveModule {
   //             ModuleConstants.kMaxModuleAngularAccelerationRadiansPerSecondSquared));
 
 
-  private final PIDController m_turningPIDController = new PIDController(ModuleConstants.kPModuleTurningController*10.5, 0, 0); //was 0.6 when it was working but too much jerk when turning 
+  private final PIDController m_turningPIDController = new PIDController(ModuleConstants.kPModuleTurningController*10, 0, 0); //was 0.6 when it was working but too much jerk when turning 
   // changed to 13 and it became jerky, was 14 first?
   private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.001, 0.05);
   //private final int m_turningEncoderReversed;
