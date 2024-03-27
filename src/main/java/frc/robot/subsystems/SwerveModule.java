@@ -39,17 +39,17 @@ public class SwerveModule {
 
   private final SparkPIDController m_drivePIDController;
   // Using a TrapezoidProfile PIDController to allow for smooth turning
-  // private final ProfiledPIDController m_turningPIDController =
-  //     new ProfiledPIDController(
-  //       ModuleConstants.kPModuleTurningController * 0.5,
-  //         0,
-  //         0,
-  //         new TrapezoidProfile.Constraints(
-  //             ModuleConstants.kMaxModuleAngularSpeedRadiansPerSecond,
-  //             ModuleConstants.kMaxModuleAngularAccelerationRadiansPerSecondSquared));
+  private final ProfiledPIDController m_turningPIDController =
+      new ProfiledPIDController(
+        ModuleConstants.kPModuleTurningController * 14.2,
+          0,
+          0,
+          new TrapezoidProfile.Constraints(
+              ModuleConstants.kMaxModuleAngularSpeedRadiansPerSecond*2,
+              ModuleConstants.kMaxModuleAngularAccelerationRadiansPerSecondSquared*2));
 
 
-  private final PIDController m_turningPIDController = new PIDController(ModuleConstants.kPModuleTurningController*11, 0, 0); //was 0.6 when it was working but too much jerk when turning 
+  // private final PIDController m_turningPIDController = new PIDController(ModuleConstants.kPModuleTurningController*11, 0, 0); //was 0.6 when it was working but too much jerk when turning 
   // changed to 13 and it became jerky, was 14 first?
   private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(0.001, 0.05);
   //private final int m_turningEncoderReversed;

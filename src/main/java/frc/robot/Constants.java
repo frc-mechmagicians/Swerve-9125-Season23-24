@@ -68,9 +68,9 @@ public final class Constants {
      */
 
      public static final double kArmAnglePickNote = 0;
-     public static final double kArmAngleAmp = 85;
+     public static final double kArmAngleAmp = 90;
      public static final double kArmAngleSubwoofer = 20.5;
-     public static final double kArmAnglePreload = 21;
+     public static final double kArmAnglePreload = 32;
      public static final double kArmAngleLongRange = 32;
      
      public static final double kArmOffset = -90;
@@ -80,11 +80,11 @@ public final class Constants {
     public static final int kLeftShooterMotorPort = 15; //spark max
     public static final int kRightShooterMotorPort = 16; // sparkflex
          
-    public static final double kShooterSpeedAmp = 0.2;
+    public static final double kShooterSpeedAmp = 0.25;
     public static final double kShooterSpeedSubwoofer = 0.7;
-    public static final double kShooterSpeedPreload = 0.65;
-    public static final double kShooterSpeedLongRange = 0.7;
-    
+    public static final double kShooterSpeedPreload = 0.8;
+    public static final double kShooterSpeedLongRange = 0.8;
+
   }
 
   
@@ -188,7 +188,7 @@ public final class Constants {
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
-    public static final double kAuotSpeed = 0.8;
+    public static final double kAuotSpeed = 0.9;
     public static final double kPXController = 1;
     public static final double kPYController = 1;
     public static final double kPThetaController = 1;

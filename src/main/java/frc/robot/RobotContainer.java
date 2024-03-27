@@ -79,7 +79,7 @@ public class RobotContainer {
                     // converting them to actual units.
                     -(m_driverController.getLeftY() * m_driverController.getLeftY() * Math.signum(m_driverController.getLeftY()))* DriveConstants.kMaxSpeedMetersPerSecond ,
                     -(m_driverController.getLeftX() * m_driverController.getLeftX() * Math.signum(m_driverController.getLeftX())) * DriveConstants.kMaxSpeedMetersPerSecond, //changed this to negative
-                    -m_driverController.getRawAxis(4)/3
+                    -m_driverController.getRawAxis(4)/1.5
                         * ModuleConstants.kMaxModuleAngularSpeedRadiansPerSecond,
                     true),
             m_robotDrive));
@@ -130,7 +130,7 @@ public class RobotContainer {
         if (m_intake.hasNote()) m_arm.setPos(ArmConstants.kArmAngleSubwoofer);
       })));
 
-    xboxButtonPick.onFalse(m_intake.runIntakeCommand(-IntakeConstants.kIntakeVoltage).unless(m_intake::hasNote).withTimeout(0.15));
+    // xboxButtonPick.onFalse(m_intake.runIntakeCommand(-IntakeConstants.kIntakeVoltage).unless(m_intake::hasNote).withTimeout(0.15));
 
     final JoystickButton PS4GyroReset = new JoystickButton(m_driverController, PS4Controller.Button.kCross.value);
     PS4GyroReset.onTrue(new InstantCommand(()->m_robotDrive.zeroHeading()));
