@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -59,6 +60,7 @@ public class DriveSubsystem extends SubsystemBase {
   // The gyro sensor
   //public final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
   public final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro();
+  private final PIDController turn_controller = new PIDController(1.0/180, 0.0/180, 0.0/180);
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry =
@@ -76,6 +78,7 @@ public class DriveSubsystem extends SubsystemBase {
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     SmartDashboard.putData("Reset Encoders", run(()->this.resetEncoders()));
+    turn_controller.setTolerance(2);
   }
 
   @Override
@@ -200,6 +203,18 @@ public class DriveSubsystem extends SubsystemBase {
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
     m_gyro.reset();
+  }
+
+
+  public double rotateRobot(double desired_angle) {
+    double gyro_angle = getHeading();
+    while (desired_angle-gyro_angle > 180) {
+      desired_angle -= 360;
+    }
+    while (gyro_angle-desired_angle > 180) {
+      desired_angle += 360;
+    }
+    return turn_controller.calculate(getHeading(),desired_angle);
   }
 
   /**

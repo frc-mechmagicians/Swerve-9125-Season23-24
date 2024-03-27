@@ -66,7 +66,6 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-
     // Configure default commands
     m_robotDrive.setDefaultCommand(
         //The left stick controls translation of the robot.
@@ -131,6 +130,26 @@ public class RobotContainer {
       })));
 
     // xboxButtonPick.onFalse(m_intake.runIntakeCommand(-IntakeConstants.kIntakeVoltage).unless(m_intake::hasNote).withTimeout(0.15));
+
+
+    final JoystickButton PS4ZeroDegrees = new JoystickButton(m_driverController, PS4Controller.Button.kR1.value);
+    PS4ZeroDegrees.onTrue(new InstantCommand(()->m_robotDrive.drive(
+      -(m_driverController.getLeftY() * m_driverController.getLeftY() * Math.signum(m_driverController.getLeftY()))* DriveConstants.kMaxSpeedMetersPerSecond,
+     -(m_driverController.getLeftX() * m_driverController.getLeftX() * Math.signum(m_driverController.getLeftX())) * DriveConstants.kMaxSpeedMetersPerSecond,
+      m_robotDrive.rotateRobot(0), true)));
+
+    final JoystickButton PS4NegNinetyDegrees = new JoystickButton(m_driverController, PS4Controller.Axis.kL2.value);
+    PS4NegNinetyDegrees.onTrue(new InstantCommand(()->m_robotDrive.drive(
+      -(m_driverController.getLeftY() * m_driverController.getLeftY() * Math.signum(m_driverController.getLeftY()))* DriveConstants.kMaxSpeedMetersPerSecond,
+     -(m_driverController.getLeftX() * m_driverController.getLeftX() * Math.signum(m_driverController.getLeftX())) * DriveConstants.kMaxSpeedMetersPerSecond,
+      m_robotDrive.rotateRobot(-90), true)));
+
+    final JoystickButton PS4NinetyDegrees = new JoystickButton(m_driverController, PS4Controller.Axis.kR2.value);
+    PS4NinetyDegrees.onTrue(new InstantCommand(()->m_robotDrive.drive(
+      -(m_driverController.getLeftY() * m_driverController.getLeftY() * Math.signum(m_driverController.getLeftY()))* DriveConstants.kMaxSpeedMetersPerSecond,
+     -(m_driverController.getLeftX() * m_driverController.getLeftX() * Math.signum(m_driverController.getLeftX())) * DriveConstants.kMaxSpeedMetersPerSecond,
+      m_robotDrive.rotateRobot(90), true)));
+
 
     final JoystickButton PS4GyroReset = new JoystickButton(m_driverController, PS4Controller.Button.kCross.value);
     PS4GyroReset.onTrue(new InstantCommand(()->m_robotDrive.zeroHeading()));
