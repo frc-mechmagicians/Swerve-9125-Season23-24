@@ -135,7 +135,7 @@ public class AutoRoutines {
                 m_arm.rotateArmCommand(ArmConstants.kArmAnglePickNote) // Rotate arm
             ).withTimeout(1.5),
 
-            // Rotate arm to shooting posiiton while moving forard
+            // Rotate arm to shooting posiiton while moving forard s
             Commands.parallel(
                 m_arm.rotateArmCommand(ArmConstants.kArmAngleSubwoofer+1), // Rotate arm
                 m_drive.run(()->m_drive.drive(-AutoConstants.kAuotSpeed*0.5, AutoConstants.kAuotSpeed, 0, false)) // drive forward

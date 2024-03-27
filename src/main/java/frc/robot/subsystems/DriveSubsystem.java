@@ -60,7 +60,7 @@ public class DriveSubsystem extends SubsystemBase {
   // The gyro sensor
   //public final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
   public final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro();
-  private final PIDController turn_controller = new PIDController(1.0/180, 0.0/180, 0.0/180);
+  private final PIDController turn_controller = new PIDController(30.0, 0.0/180, 0.0/180);
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry =
@@ -75,7 +75,7 @@ public class DriveSubsystem extends SubsystemBase {
           });
 
 
-  /** Creates a new DriveSubsystem. */
+  /** Creates a new \DriveSubsystem. */
   public DriveSubsystem() {
     SmartDashboard.putData("Reset Encoders", run(()->this.resetEncoders()));
     turn_controller.setTolerance(2);
